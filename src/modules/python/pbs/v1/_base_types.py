@@ -758,7 +758,7 @@ class pbs_bool(_generic_attr):
     def __int__(self):
         return int(str(self))
 
-class pbs_int(long):    
+class pbs_int(int):
     _derived_types = (int, int, float)
     def __init__(self, value):
         # empty  string ("") also matched
@@ -766,7 +766,7 @@ class pbs_int(long):
             _pbs_v1.validate_input("job", "ctime", str(int(value)))
         super(pbs_int, self).__init__(value)
 
-class vnode_state(long):    
+class vnode_state(int):
     _derived_types = (int, int, float)
     def __init__(self, value):
         # empty  string ("") also matched
@@ -1065,14 +1065,14 @@ class place(_generic_attr):
         _pbs_v1.validate_input("resc", "place", value)
         super(place, self).__init__(value)
 
-class vnode_sharing(long):    
+class vnode_sharing(int):
     _derived_types = (int, int, float)
     def __init__(self, value):
         if _pbs_v1.vnode_sharing_to_str(int(value)) == "":
             raise BadAttributeValueError("invalid vnode sharing value '%s'" % (value,))
         super(int, self).__init__(value)
 
-class vnode_ntype(long):    
+class vnode_ntype(int):
     _derived_types = (int, int, float)
     def __init__(self, value):
         if _pbs_v1.vnode_ntype_to_str(int(value)) == "":

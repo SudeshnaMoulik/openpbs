@@ -363,7 +363,6 @@ SUCCESSFUL_INIT:
 static void
 pps_size_dealloc(PPSVR_Size_Object *self)
 {
-	PyObject tmp;
 	if (self->str_value) {
 		free(self->str_value);
 	}
@@ -396,13 +395,13 @@ pps_size_repr(PPSVR_Size_Object *self) {
 
 /* __coerce__ */
 
-
+/*
 static int
 pps_size_number_methods_coerce(PyObject **self, PyObject **other)
 {
 	PyObject *tmp_other = NULL;
 	int rc;
-	if (PyInt_Check(*other) || PyLong_Check(*other)) {
+	if (PyLong_Check(*other)) {
 		if (!(tmp_other = pps_size_new(&PPSVR_Size_Type, NULL, NULL)))
 			goto ERROR_EXIT;
 		if ((rc = _pps_size_from_long_or_int(tmp_other, *other)) == -1)
@@ -412,7 +411,7 @@ pps_size_number_methods_coerce(PyObject **self, PyObject **other)
 		}
 	}
 
-	if (PyString_Check(*other)) {
+	if (PyUnicode_Check(*other)) {
 		if (!(tmp_other = pps_size_new(&PPSVR_Size_Type, NULL, NULL)))
 			goto ERROR_EXIT;
 		if ((rc = _pps_size_from_string(tmp_other, *other)) == -1)
@@ -422,7 +421,7 @@ pps_size_number_methods_coerce(PyObject **self, PyObject **other)
 		}
 	}
 
-	/* can't conver */
+	//can't conver
 	goto ERROR_EXIT;
 COERCE_SUCESS:
 	*other = tmp_other;
@@ -433,8 +432,8 @@ COERCE_SUCESS:
 ERROR_EXIT:
 	if (tmp_other)
 		Py_CLEAR(tmp_other);
-	return 1; /* Can't do it */
-}
+	return 1; //Can't do it
+}*/
 
 
 /* __cmp__ */

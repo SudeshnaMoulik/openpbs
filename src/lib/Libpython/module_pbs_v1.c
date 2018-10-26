@@ -616,8 +616,7 @@ ERROR_EXIT:
 PyObject *
 pbs_v1_module_inittab(void)
 {
-	(void) pbs_v1_module_init();
-	return;
+	return pbs_v1_module_init();
 }
 
 
@@ -629,6 +628,5 @@ pbs_v1_module_inittab(void)
 PyMODINIT_FUNC
 init_pbs_v1(void)
 {
-	(void) pbs_v1_module_init();
-	return;
+	return pbs_v1_module_init();
 }

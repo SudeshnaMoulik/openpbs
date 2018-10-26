@@ -959,7 +959,7 @@ pbs_python_setup_server_class_attributes(void)
 	PyObject *py_default_args = NULL;
 	int num_entry =  SRV_ATR_LAST+1; /* 1 for sentinel */
 	int te;
-	attribute *attr_val = NULL;
+	//attribute *attr_val = NULL;
 
 	if (IS_PBS_PYTHON_CMD(pbs_python_daemon_name))
 		DEBUG3_ARG1("BEGIN setting up all server attributes %s", "");

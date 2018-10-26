@@ -233,7 +233,7 @@ pbs_python_write_error_to_log(const char *emsg)
 	PyObject *module_name = NULL;
 	PyObject *pyth_module = NULL;
 	PyObject *pyth_func = NULL;
-	char *full_backtrace = NULL;
+	//char *full_backtrace = NULL;
 	char *str = NULL;
 
 	/* get the exception */
@@ -284,7 +284,7 @@ pbs_python_write_error_to_log(const char *emsg)
 	Py_XDECREF(module_name);
 
 	if (pyth_module == NULL){
-		full_backtrace = NULL;
+		//full_backtrace = NULL;
 		snprintf(log_buffer, LOG_BUF_SIZE-1, "%s", "No full backtrace");
 		log_err(PBSE_INTERNAL, emsg, log_buffer);
 		goto ERROR_EXIT;

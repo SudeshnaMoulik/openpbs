@@ -48,7 +48,7 @@ AC_DEFUN([PBS_AC_WITH_PYTHON],
   )
   AM_PATH_PYTHON([3.6])
   AS_IF([test "$PYTHON_VERSION" != "3.6" ],
-    AC_MSG_ERROR([Python must be version 2.6 or 2.7]))
+    AC_MSG_ERROR([Python must be version 3.6]))
   [PYTHON_INCLUDES=`$PYTHON ${srcdir}/buildutils/python-autoconf.py --includes`]
   AC_SUBST(PYTHON_INCLUDES)
   [PYTHON_CFLAGS=`$PYTHON ${srcdir}/buildutils/python-autoconf.py --cflags`]

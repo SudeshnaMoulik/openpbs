@@ -9554,22 +9554,22 @@ main(int argc, char *argv[])
 
 #else
 	/* list of possible paths to Python modules (mom imports json) */
-	snprintf(buf, sizeof(buf), "%s/python/lib/python2.7", pbs_conf.pbs_exec_path);
+	snprintf(buf, sizeof(buf), "%s/python/lib/python3.6", pbs_conf.pbs_exec_path);
 	PyList_Append(path, PyUnicode_FromString(buf));
 
-	snprintf(buf, sizeof(buf), "%s/python/lib/python2.7/lib-dynload", pbs_conf.pbs_exec_path);
+	snprintf(buf, sizeof(buf), "%s/python/lib/python3.6/lib-dynload", pbs_conf.pbs_exec_path);
 	PyList_Append(path, PyUnicode_FromString(buf));
 
-	snprintf(buf, sizeof(buf), "/usr/lib/python/python2.7");
+	snprintf(buf, sizeof(buf), "/usr/lib/python/python3.6");
 	PyList_Append(path, PyUnicode_FromString(buf));
 
-	snprintf(buf, sizeof(buf), "/usr/lib/python/python2.7/lib-dynload");
+	snprintf(buf, sizeof(buf), "/usr/lib/python/python3.6/lib-dynload");
 	PyList_Append(path, PyUnicode_FromString(buf));
 
-	snprintf(buf, sizeof(buf), "/usr/lib64/python/python2.7");
+	snprintf(buf, sizeof(buf), "/usr/lib64/python/python3.6");
 	PyList_Append(path, PyUnicode_FromString(buf));
 
-	snprintf(buf, sizeof(buf), "/usr/lib64/python/python2.7/lib-dynload");
+	snprintf(buf, sizeof(buf), "/usr/lib64/python/python3.6/lib-dynload");
 	PyList_Append(path, PyUnicode_FromString(buf));
 #endif
 	PySys_SetObject("path", path);

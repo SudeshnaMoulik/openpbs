@@ -209,10 +209,10 @@ schedinit(void)
 
 	path = PySys_GetObject("path");
 
-	snprintf(buf, sizeof(buf), "%s/python/lib/python2.7", pbs_conf.pbs_exec_path);
+	snprintf(buf, sizeof(buf), "%s/python/lib/python3.6", pbs_conf.pbs_exec_path);
 	PyList_Append(path, PyUnicode_FromString(buf));
 
-	snprintf(buf, sizeof(buf), "%s/python/lib/python2.7/lib-dynload", pbs_conf.pbs_exec_path);
+	snprintf(buf, sizeof(buf), "%s/python/lib/python3.6/lib-dynload", pbs_conf.pbs_exec_path);
 	PyList_Append(path, PyUnicode_FromString(buf));
 
 	PySys_SetObject("path", path);

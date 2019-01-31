@@ -45,6 +45,7 @@
 
 #ifdef PYTHON
 #include <Python.h>
+#include <pythonrun.h>
 #endif
 
 #ifdef	WIN32
@@ -9544,6 +9545,20 @@ main(int argc, char *argv[])
 #ifdef PYTHON
 	Py_NoSiteFlag = 1;
 	Py_FrozenFlag = 1;
+
+        /* Setting PYTHONHOME */
+        Py_IgnoreEnvironmentFlag = 1;
+        char pbs_python_home[MAXPATHLEN+1];
+        memset((char *)pbs_python_home, '\0', MAXPATHLEN+1);
+        snprintf(pbs_python_home, MAXPATHLEN, "%s/python",
+                pbs_conf.pbs_exec_path);
+        if (file_exists(pbs_python_home)) {
+                wchar_t tmp_pbs_python_home[MAXPATHLEN+1];
+                memset((wchar_t *)tmp_pbs_python_home, '\0', MAXPATHLEN+1);
+                mbstowcs(tmp_pbs_python_home, pbs_python_home, MAXPATHLEN+1);
+                Py_SetPythonHome(tmp_pbs_python_home);
+        }
+
 	Py_Initialize();
 
 	path = PySys_GetObject("path");

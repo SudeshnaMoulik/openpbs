@@ -58,6 +58,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <wchar.h>
 
 extern PyObject* PyInit__pbs_ifl(void);
 
@@ -176,7 +177,7 @@ pbs_python_ext_start_interpreter(
 	Py_IgnoreEnvironmentFlag = 1;   /* ignore PYTHONPATH and PYTHONHOME */
 	if (file_exists(pbs_python_home)) {
 		wchar_t tmp_pbs_python_home[MAXPATHLEN+1];
-		memset((wchar_t *)tmp_pbs_python_home, '\0', MAXPATHLEN+1);
+		wmemset((wchar_t *)tmp_pbs_python_home, '\0', MAXPATHLEN+1);
 		mbstowcs(tmp_pbs_python_home, pbs_python_home, MAXPATHLEN+1);
 		Py_SetPythonHome(tmp_pbs_python_home);
 	}
@@ -323,7 +324,7 @@ pbs_python_ext_quick_start_interpreter(void)
 	Py_IgnoreEnvironmentFlag = 1;   /* ignore PYTHONPATH and PYTHONHOME */
 	if (file_exists(pbs_python_home)) {
 		wchar_t tmp_pbs_python_home[MAXPATHLEN+1];
-		memset((wchar_t *)tmp_pbs_python_home, '\0', MAXPATHLEN+1);
+		wmemset((wchar_t *)tmp_pbs_python_home, '\0', MAXPATHLEN+1);
 		mbstowcs(tmp_pbs_python_home, pbs_python_home, MAXPATHLEN+1);
 		Py_SetPythonHome(tmp_pbs_python_home);
 	}

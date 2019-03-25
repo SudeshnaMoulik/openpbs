@@ -70,6 +70,7 @@
 #ifdef PYTHON
 #include <Python.h>
 #include <pythonrun.h>
+#include <wchar.h>
 #endif
 
 #include <stdio.h>
@@ -215,7 +216,7 @@ schedinit(void)
                 pbs_conf.pbs_exec_path);
         if (file_exists(pbs_python_home)) {
                 wchar_t tmp_pbs_python_home[MAXPATHLEN+1];
-                memset((wchar_t *)tmp_pbs_python_home, '\0', MAXPATHLEN+1);
+                wmemset((wchar_t *)tmp_pbs_python_home, '\0', MAXPATHLEN+1);
                 mbstowcs(tmp_pbs_python_home, pbs_python_home, MAXPATHLEN+1);
                 Py_SetPythonHome(tmp_pbs_python_home);
         }

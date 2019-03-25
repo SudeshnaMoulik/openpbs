@@ -11831,16 +11831,17 @@ pbs_python_set_os_environ(char *env_var, char *env_val)
 			__func__);
 		pbs_python_write_error_to_log(log_buffer);
 		return (-1);
-	}else{
+	}
+	/*else{
 		snprintf(log_buffer, LOG_BUF_SIZE-1, "%s", "Printing os module");
 		log_event(PBSEVENT_DEBUG2, PBS_EVENTCLASS_HOOK, LOG_INFO,
 			  __func__, log_buffer);
 		PyObject* objectsRepresentation = PyObject_Repr(os_mod_obj);
 		const char* s = PyUnicode_AsUTF8(objectsRepresentation);
-		snprintf(log_buffer, sizeof(log_buffer), s);
+		snprintf(log_buffer, sizeof(log_buffer), "%s", s);
 		log_event(PBSEVENT_DEBUG2, PBS_EVENTCLASS_HOOK, LOG_INFO,
 			  __func__, log_buffer);
-	}
+	}*/
 
 	/* if sucess we get a NEW ref */
 	if ((os_mod_env =
@@ -11852,16 +11853,17 @@ pbs_python_set_os_environ(char *env_var, char *env_val)
 		Py_CLEAR(os_mod_obj);
 		return (-1);
 
-	}else{
+	}
+        /*else{
 		snprintf(log_buffer, LOG_BUF_SIZE-1, "%s", "Printing environ");
 		log_event(PBSEVENT_DEBUG2, PBS_EVENTCLASS_HOOK, LOG_INFO,
 			  __func__, log_buffer);
 		PyObject* objectsRepresentation = PyObject_Repr(os_mod_env);
 		const char* s = PyUnicode_AsUTF8(objectsRepresentation);
-		snprintf(log_buffer, sizeof(log_buffer), s);
+		snprintf(log_buffer, sizeof(log_buffer),"%s", s);
 		log_event(PBSEVENT_DEBUG2, PBS_EVENTCLASS_HOOK, LOG_INFO,
 			  __func__, log_buffer);
-	}
+	}*/
 
 	if ((os_env_dict =
 		PyObject_GetAttrString(os_mod_env, "_data")) == NULL) {
@@ -11873,16 +11875,17 @@ pbs_python_set_os_environ(char *env_var, char *env_val)
 		Py_CLEAR(os_mod_env);
 		return (-1);
 
-	}else{
+	}
+        /*else{
 		snprintf(log_buffer, LOG_BUF_SIZE-1, "%s", "Printing _data module");
 		log_event(PBSEVENT_DEBUG2, PBS_EVENTCLASS_HOOK, LOG_INFO,
 			  __func__, log_buffer);
 		PyObject* objectsRepresentation = PyObject_Repr(os_env_dict);
 		const char* s = PyUnicode_AsUTF8(objectsRepresentation);
-		snprintf(log_buffer, sizeof(log_buffer), s);
+		snprintf(log_buffer, sizeof(log_buffer), "%s", s);
 		log_event(PBSEVENT_DEBUG2, PBS_EVENTCLASS_HOOK, LOG_INFO,
 			  __func__, log_buffer);
-	}
+	}*/
 
 	if (env_val == NULL) {
 

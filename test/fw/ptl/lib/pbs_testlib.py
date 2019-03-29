@@ -46,7 +46,7 @@ import re
 import random
 import string
 import tempfile
-import cPickle
+import pickle
 import copy
 import datetime
 import traceback
@@ -54,6 +54,7 @@ import threading
 from operator import itemgetter
 from collections import OrderedDict
 from distutils.version import LooseVersion
+import collections
 
 try:
     import psycopg2
@@ -101,7 +102,7 @@ PBS_HOOK = MGR_OBJ_PBS_HOOK
 
 # the order of these symbols matters, see pbs_ifl.h
 (SET, UNSET, INCR, DECR, EQ, NE, GE, GT,
- LE, LT, MATCH, MATCH_RE, NOT, DFLT) = range(14)
+ LE, LT, MATCH, MATCH_RE, NOT, DFLT) = list(range(14))
 
 (PTL_OR, PTL_AND) = [0, 1]
 
@@ -272,7 +273,7 @@ class PtlConfig(object):
                 self.options[k] = v
             except:
                 self.logger.error('Error parsing line ' + line)
-        for k, v in self.options.items():
+        for k, v in list(self.options.items()):
             if k in os.environ:
                 v = os.environ[k]
             else:
@@ -752,7 +753,7 @@ class PbsTypeList(dict):
         self.kvsep = kvsep
         self.separator = sep
         d = {}
-        as_list = map(lambda v: v.split(kvsep), value.split(sep))
+        as_list = [v.split(kvsep) for v in value.split(sep)]
         if as_list:
             for k, v in as_list:
                 d[k] = v
@@ -950,13 +951,13 @@ class PbsTypeChunk(dict):
         :returns: Added chunk specification
         """
         if self.vnode == vnode:
-            self.resources = dict(self.resources.items() + resources.items())
+            self.resources = dict(list(self.resources.items()) + list(resources.items()))
             return self
         elif len(self.vchunk) != 0:
             for chk in self.vchunk:
                 if chk.vnode == vnode:
-                    chk.resources = dict(self.resources.items() +
-                                         resources.items())
+                    chk.resources = dict(list(self.resources.items()) +
+                                         list(resources.items()))
                     return self
         chk = PbsTypeChunk(vnode, resources)
         self.vchunk.append(chk)
@@ -1038,7 +1039,7 @@ class PbsTypeExecVnode(list):
         for e in self:
             vnodes += [e.vnode]
             if e.vchunk:
-                vnodes += map(lambda n: n.vnode, e.vchunk)
+                vnodes += [n.vnode for n in e.vchunk]
 
         return list(set(vnodes))
 
@@ -1364,7 +1365,7 @@ class BatchUtils(object):
         prev = None
         head = None
 
-        for k, v in d.items():
+        for k, v in list(d.items()):
             if isinstance(v, tuple):
                 op = v[0]
                 v = v[1]
@@ -1466,7 +1467,7 @@ class BatchUtils(object):
                              attrs.value + '\n')
             else:
                 writer.write('\t' + attrs.name + '= ' + attrs.value + '\n')
-            attrs = attrs.next
+            attrs = attrs.__next__
 
     def display_dict(self, d, writer=sys.stdout):
         """
@@ -1499,7 +1500,7 @@ class BatchUtils(object):
         ret = []
         while bs:
             if id is not None and bs.name != id:
-                bs = bs.next
+                bs = bs.__next__
                 continue
             d = {}
             attrs = bs.attribs
@@ -1510,7 +1511,7 @@ class BatchUtils(object):
                     key = attrs.name
                 if attr_names is not None:
                     if key not in attr_names:
-                        attrs = attrs.next
+                        attrs = attrs.__next__
                         continue
                 val = attrs.value
                 if attrs.name in attr_time:
@@ -1521,11 +1522,11 @@ class BatchUtils(object):
                     d[key] = d[key] + ',' + str(val)
                 else:
                     d[key] = str(val)
-                attrs = attrs.next
-            if len(d.keys()) > 0:
+                attrs = attrs.__next__
+            if len(list(d.keys())) > 0:
                 ret.append(d)
                 d['id'] = bs.name
-            bs = bs.next
+            bs = bs.__next__
         return ret
 
     def display_batch_status(self, bs=None, attr_names=None,
@@ -1608,7 +1609,7 @@ class BatchUtils(object):
         try:
             with open(fpath, 'r') as f:
                 lines = f.readlines()
-        except Exception, e:
+        except Exception as e:
             self.logger.error('error converting list of dictionaries to ' +
                               'file ' + str(e))
             return []
@@ -1970,8 +1971,8 @@ class BatchUtils(object):
                         attr.name.startswith("sharing"):
                     out += [bs.name + ": "]
                     out += [attr.name + "=" + attr.value + "\n"]
-                attr = attr.next
-            bs = bs.next
+                attr = attr.__next__
+            bs = bs.__next__
         return "".join(out)
 
     def dictlist_to_vnodedef(self, dl=None):
@@ -2027,7 +2028,7 @@ class BatchUtils(object):
         :param obj: ``PBS/PTL`` object
         :returns: Dictionary of ``PBS/PTL`` objects
         """
-        newobj = dict(obj.attributes.items())
+        newobj = dict(list(obj.attributes.items()))
         newobj[id] = obj.name
         return newobj
 
@@ -2159,7 +2160,7 @@ class BatchUtils(object):
         :type value: str or int
         :returns: int or float or string
         """
-        if value is None or callable(value):
+        if value is None or isinstance(value, collections.Callable):
             return value
 
         if isinstance(value, (int, float)):
@@ -2447,7 +2448,7 @@ class BatchUtils(object):
             del tmp_attrs
 
         if isinstance(attrs, (dict, OrderedDict)):
-            attrs = attrs.items()
+            attrs = list(attrs.items())
 
         for a, v in attrs:
             if exclude_attrs is not None and a in exclude_attrs:
@@ -2535,7 +2536,7 @@ class BatchUtils(object):
         """
 
         if isinstance(attrib, dict):
-            keys = attrib.keys()
+            keys = list(attrib.keys())
         elif isinstance(attrib, str):
             keys = attrib.split(',')
         else:
@@ -2602,7 +2603,7 @@ class BatchUtils(object):
         :type attrib: str
         :returns: True or False
         """
-        operators = PTL_STR_TO_OP.keys()
+        operators = list(PTL_STR_TO_OP.keys())
         for a in attrib:
             for op in operators:
                 if op in a:
@@ -3210,7 +3211,7 @@ class ExpectActions(object):
         """
         Get all the action
         """
-        return self.actions.values()
+        return list(self.actions.values())
 
     def get_actions_by_type(self, atype=None):
         """
@@ -3272,7 +3273,7 @@ class ExpectActions(object):
         """
         Enable all actions
         """
-        for a in self.actions.values():
+        for a in list(self.actions.values()):
             a.enabled = True
 
 
@@ -3370,11 +3371,11 @@ class PBSObject(object):
         if isinstance(a, list):
             a = OrderedDict(a)
 
-        self.attributes = OrderedDict(self.dflt_attributes.items() +
-                                      self.attributes.items() + a.items())
+        self.attributes = OrderedDict(list(self.dflt_attributes.items()) +
+                                      list(self.attributes.items()) + list(a.items()))
 
-        self.custom_attrs = OrderedDict(self.custom_attrs.items() +
-                                        a.items())
+        self.custom_attrs = OrderedDict(list(self.custom_attrs.items()) +
+                                        list(a.items()))
 
     def unset_attributes(self, attrl=[]):
         """
@@ -3690,8 +3691,8 @@ class PBSService(PBSObject):
 
         if procname is not None:
             pi = self.pu.get_proc_info(self.hostname, procname)
-            if pi is not None and pi.values() and pi.values()[0]:
-                for _p in pi.values()[0]:
+            if pi is not None and list(pi.values()) and list(pi.values())[0]:
+                for _p in list(pi.values())[0]:
                     ret = self.du.run_cmd(self.hostname, ['kill', sig, _p.pid],
                                           sudo=True)
                 return ret
@@ -3709,11 +3710,11 @@ class PBSService(PBSObject):
         cmd = self._instance_to_cmd(inst)
         self.pu.get_proc_info(self.hostname, ".*" + cmd + ".*",
                               regexp=True)
-        _procs = self.pu.processes.values()
+        _procs = list(self.pu.processes.values())
         if _procs:
             _pids = []
             for _p in _procs:
-                _pids.extend(map(lambda x: x.pid, _p))
+                _pids.extend([x.pid for x in _p])
             return _pids
         return None
 
@@ -4237,6 +4238,7 @@ class PBSService(PBSObject):
         """
         if os.path.isfile(infile):
             conf = {}
+<<<<<<< HEAD
             with open(infile, 'r') as f:
                 # load all objects from the Pickled file
                 while True:
@@ -4244,6 +4246,16 @@ class PBSService(PBSObject):
                         conf = cPickle.load(f)
                     except:
                         break
+=======
+            f = open(infile, 'r')
+            # load all objects from the Pickled file
+            while True:
+                try:
+                    conf = pickle.load(f)
+                except:
+                    break
+            f.close()
+>>>>>>> PBS-22605: PTL framework changes to Python 3
 
             if objtype and objtype in conf:
                 conf = conf[objtype]
@@ -4253,7 +4265,7 @@ class PBSService(PBSObject):
                 for ky in [MGR_OBJ_SERVER, MGR_OBJ_SCHED, MGR_OBJ_NODE]:
                     if ky not in conf:
                         conf[ky] = {}
-                    newconf = dict(newconf.items() + conf[ky].items())
+                    newconf = dict(list(newconf.items()) + list(conf[ky].items()))
                 conf = newconf
 
             for k, v in conf.items():
@@ -5081,7 +5093,7 @@ class Server(PBSService):
         if server_stat is None:
             server_stat = self.status(SERVER, level=logging.DEBUG)[0]
         for k in server_stat.keys():
-            if (k in ignore_attrs) or (k in self.dflt_attributes.keys()):
+            if (k in ignore_attrs) or (k in list(self.dflt_attributes.keys())):
                 continue
             elif (('.' in k) and (k.split('.')[0] in ignore_attrs)):
                 continue
@@ -5115,7 +5127,7 @@ class Server(PBSService):
                 try:
                     nodes = self.status(VNODE, logerr=False)
                     for node in nodes:
-                        if 'queue' in node.keys():
+                        if 'queue' in list(node.keys()):
                             self.manager(MGR_CMD_UNSET, NODE, 'queue',
                                          node['id'])
                 except:
@@ -5152,7 +5164,7 @@ class Server(PBSService):
                 if self.du.cmp(self.hostname, self.dflt_mpp_hook,
                                self.mpp_hook, sudo=True) != 0:
                     self.du.run_copy(self.hostname, self.dflt_mpp_hook,
-                                     self.mpp_hook, mode=0644, sudo=True)
+                                     self.mpp_hook, mode=644, sudo=True)
                     self.signal('-HUP')
             hooks = self.status(HOOK, level=logging.DEBUG)
             hooks = [h['id'] for h in hooks]
@@ -5239,8 +5251,14 @@ class Server(PBSService):
             conf['qmgr_print_hook'] = ret['out']
 
         try:
+<<<<<<< HEAD
             with open(outfile, mode) as f:
                 cPickle.dump(sconf, f)
+=======
+            f = open(outfile, mode)
+            pickle.dump(sconf, f)
+            f.close()
+>>>>>>> PBS-22605: PTL framework changes to Python 3
         except:
             self.logger.error('Error processing file ' + outfile)
             return False
@@ -5408,7 +5426,7 @@ class Server(PBSService):
             extra_stmt = []
             if attrib:
                 if isinstance(attrib, dict):
-                    attrs = attrib.keys()
+                    attrs = list(attrib.keys())
                 elif isinstance(attrib, list):
                     attrs = attrib
                 elif isinstance(attrib, str):
@@ -5438,7 +5456,7 @@ class Server(PBSService):
 
             obj_dict[obj_name][attr] = _res[3]
 
-        return obj_dict.values()
+        return list(obj_dict.values())
 
 #
 # Begin IFL Wrappers
@@ -5606,7 +5624,7 @@ class Server(PBSService):
                 try:
                     rc = self.manager(MGR_CMD_LIST, obj_type, attrib, id,
                                       runas=runas, level=level, logerr=logerr)
-                except PbsManagerError, e:
+                except PbsManagerError as e:
                     rc = e.rc
                     # PBS bug, no hooks yields a return code of 1, we ignore
                     if obj_type != HOOK:
@@ -5626,7 +5644,7 @@ class Server(PBSService):
                             return [o[id].attributes]
                         else:
                             return None
-                    return [h.attributes for h in o.values()]
+                    return [h.attributes for h in list(o.values())]
                 return []
 
             else:
@@ -5687,7 +5705,7 @@ class Server(PBSService):
                             v = ''
                         else:
                             v = v[1]
-                    if callable(v):
+                    if isinstance(v, collections.Callable):
                         v = ''
                     if '.' in k:
                         _r = k.split('.')[0]
@@ -5750,10 +5768,10 @@ class Server(PBSService):
                                     return None
                             if obj_type == HOOK:
                                 return [h.attributes for h in
-                                        self.hooks.values()]
+                                        list(self.hooks.values())]
                             elif obj_type == PBS_HOOK:
                                 return [h.attributes for h in
-                                        self.pbshooks.values()]
+                                        list(self.pbshooks.values())]
                     except:
                         pass
                 else:
@@ -5882,7 +5900,7 @@ class Server(PBSService):
                                                   prefix='PtlPbsJobScript',
                                                   asuser=obj.username,
                                                   body=aprun_cmd)
-                    self.du.chmod(path=fn, mode=0755)
+                    self.du.chmod(path=fn, mode="0755")
                     script = fn
             elif script is None and obj.script is not None:
                 script = obj.script
@@ -6306,7 +6324,7 @@ class Server(PBSService):
                 obj_type[j] = RESV
                 try:
                     rc = self.delresv(j, extend, runas, logerr=logerr)
-                except PbsDelresvError, e:
+                except PbsDelresvError as e:
                     rc = e.rc
                     msg = e.msg
                     rv = e.rv
@@ -6314,7 +6332,7 @@ class Server(PBSService):
                 obj_type[j] = JOB
                 try:
                     rc = self.deljob(j, extend, runas, logerr=logerr)
-                except PbsDeljobError, e:
+                except PbsDeljobError as e:
                     rc = e.rc
                     msg = e.msg
                     rv = e.rv
@@ -7895,9 +7913,9 @@ class Server(PBSService):
         if _data is not None:
             fn = self.du.create_temp_file()
             with open(fn, 'w+b') as tmpfile:
-                cPickle.dump(_data, tmpfile)
+                pickle.dump(_data, tmpfile)
 
-            os.chmod(fn, 0755)
+            os.chmod(fn, 0o755)
 
             if self._is_local:
                 os.chdir(tempfile.gettempdir())
@@ -8162,10 +8180,10 @@ class Server(PBSService):
                 attrs_to_ignore.append(k)
                 continue
             msg += [k, PTL_OP_TO_STR[operator].strip()]
-            if callable(val):
+            if isinstance(val, collections.Callable):
                 msg += ['callable(' + val.__name__ + ')']
                 if args is not None:
-                    msg.extend(map(lambda x: str(x), args))
+                    msg.extend([str(x) for x in args])
             else:
                 msg += [str(val)]
             msg += [PTL_ATTROP_TO_STR[attrop]]
@@ -8246,7 +8264,7 @@ class Server(PBSService):
                     # Sometimes users provide the wrong case for attributes
                     # Convert to lowercase and compare
                     attrs_lower = {
-                        ks.lower(): [ks, vs] for ks, vs in stat.iteritems()}
+                        ks.lower(): [ks, vs] for ks, vs in stat.items()}
                     k_lower = k.lower()
                     if k_lower not in attrs_lower:
                         self.logger.error("Attribute %s not found" % k)
@@ -8270,7 +8288,7 @@ class Server(PBSService):
 
                 # functions/methods are invoked and their return value
                 # used on expect
-                if callable(v):
+                if isinstance(v, collections.Callable):
                     if varargs is not None:
                         rv = v(stat_v, *varargs)
                     else:
@@ -8342,7 +8360,7 @@ class Server(PBSService):
         """
         a = ATTR_JobHistoryEnable
         attrs = self.status(SERVER, level=logging.DEBUG)[0]
-        if ((a in attrs.keys()) and attrs[a] == 'True'):
+        if ((a in list(attrs.keys())) and attrs[a] == 'True'):
             return True
         return False
 
@@ -8939,7 +8957,7 @@ class Server(PBSService):
                 else:
                     equiv[cls] = EquivClass(cls, attrs, [bs['id']])
 
-        return equiv.values()
+        return list(equiv.values())
 
     def show_equivalence_classes(self, eq=None, obj_type=None, attrib={},
                                  bslist=None, op=RESOURCES_AVAILABLE,
@@ -8965,7 +8983,7 @@ class Server(PBSService):
         equiv = sorted(equiv, key=lambda e: len(e.entities))
         for e in equiv:
             # e.show()
-            print str(e)
+            print((str(e)))
 
     def whats_available(self, attrib=None, jobs=None, resvs=None, nodes=None):
         """
@@ -8998,7 +9016,7 @@ class Server(PBSService):
             self.status(NODE)
             nodes = self.nodes
 
-        nodes_id = nodes.keys()
+        nodes_id = list(nodes.keys())
         avail_nodes_by_time = {}
 
         def alloc_resource(self, node, resources):
@@ -9129,12 +9147,12 @@ class Server(PBSService):
         if wa is None:
             wa = self.whats_available(attrib, jobs, resvs, nodes)
         if len(wa) > 0:
-            print "%24s\t%s" % ("Duration of availability", "Resources")
-            print "-------------------------\t----------"
-        swa = sorted(wa.items(), key=lambda x: x[0])
+            print(("%24s\t%s" % ("Duration of availability", "Resources")))
+            print("-------------------------\t----------")
+        swa = sorted(list(wa.items()), key=lambda x: x[0])
         for (k, eq_classes) in swa:
             for eq_cl in eq_classes:
-                print "%24s\t%s" % (str(k), str(eq_cl))
+                print(("%24s\t%s" % (str(k), str(eq_cl))))
 
     def utilization(self, resources=None, nodes=None, jobs=None, entity={}):
         """
@@ -9402,7 +9420,7 @@ class Server(PBSService):
         if delall:
             try:
                 rc = self.manager(MGR_CMD_DELETE, NODE, None, "")
-            except PbsManagerError, e:
+            except PbsManagerError as e:
                 rc = e.rc
             if rc:
                 if len(self.status(NODE)) > 0:
@@ -9430,7 +9448,7 @@ class Server(PBSService):
             _np_conf['PBS_START_SERVER'] = '0'
             _np_conf['PBS_START_SCHED'] = '0'
             _np_conf['PBS_START_MOM'] = '1'
-            for i in xrange(0, num * step_port, step_port):
+            for i in range(0, num * step_port, step_port):
                 _np = os.path.join(_hp, home_prefix + str(i))
                 _n_pbsconf = os.path.join('/etc', conf_prefix + str(i))
                 _np_conf['PBS_HOME'] = _np
@@ -9481,7 +9499,7 @@ class Server(PBSService):
         """
         hooks = self.status(HOOK)
         if ((hooks is None or len(hooks) == 0) or
-                (name not in map(lambda x: x['id'], hooks))):
+                (name not in [x['id'] for x in hooks])):
             self.manager(MGR_CMD_CREATE, HOOK, None, name)
         else:
             self.logger.error('hook named ' + name + ' exists')
@@ -9851,7 +9869,7 @@ class Server(PBSService):
 
         slim = self.parse_server_limits(server, db_access=db_access)
         qlim = self.parse_queue_limits(queues, id=None, db_access=db_access)
-        self.limits = dict(slim.items() + qlim.items())
+        self.limits = dict(list(slim.items()) + list(qlim.items()))
         del slim
         del qlim
         return self.limits
@@ -9942,7 +9960,7 @@ class Server(PBSService):
             return usage
 
         self.parse_all_limits(server, queues, db_access)
-        entities_p = self.entities.values()
+        entities_p = list(self.entities.values())
 
         linfo = []
         cache = {}
@@ -10126,7 +10144,7 @@ class Server(PBSService):
             stmt += ", " + str(svrflags)
             stmt += ", 0, 0, 0"
             if 'stime' in job:
-                print job['stime']
+                print((job['stime']))
                 st = time.strptime(job['stime'], "%a %b %d %H:%M:%S %Y")
                 stmt += ", " + str(time.mktime(st))
             else:
@@ -10334,7 +10352,7 @@ class Server(PBSService):
                 # before setting queue on nodes make sure that the vnode
                 # def is all set
                 svr.expect(NODE, {'state=free': (GE, len(dl))}, interval=3)
-                for k, v in qtoset.items():
+                for k, v in list(qtoset.items()):
                     svr.manager(MGR_CMD_SET, NODE, {'queue': k}, id=v)
             else:
                 self.logger.error("nodes information not found in snapshot")
@@ -10356,7 +10374,7 @@ class Server(PBSService):
             if import_jobs:
                 jobs = self.status(JOB)
                 sql_stmt = self.__insert_jobs_in_db(jobs, h)
-                print "\n".join(sql_stmt)
+                print(("\n".join(sql_stmt)))
                 if db_creds_file is not None:
                     pass
 
@@ -10404,7 +10422,7 @@ class EquivClass(PBSObject):
             s += str(self.entities)
         else:
             s += str(len(self.entities))
-        print s
+        print(s)
         return s
 
 
@@ -10722,7 +10740,7 @@ class Scheduler(PBSService):
                                        id=self.sc_name)
             if attrs is not None and len(attrs) > 0:
                 self.attributes = attrs[0]
-        except (PbsManagerError, PbsStatusError), e:
+        except (PbsManagerError, PbsStatusError) as e:
             self.logger.error('Error querying scheduler %s' % e.msg)
 
     def isUp(self):
@@ -11005,7 +11023,7 @@ class Scheduler(PBSService):
         Check the values in argument config against default values
         """
 
-        if len(config.keys()) == 0:
+        if len(list(config.keys())) == 0:
             return
         for k, v in self.sched_dflt_config.items():
             if k in config:
@@ -11122,7 +11140,7 @@ class Scheduler(PBSService):
         """
         self.parse_sched_config()
         self.logger.info(self.logprefix + "config " + str(confs))
-        self.sched_config = dict(self.sched_config.items() + confs.items())
+        self.sched_config = dict(list(self.sched_config.items()) + list(confs.items()))
         if apply:
             try:
                 self.apply_config(validate=validate)
@@ -11134,7 +11152,7 @@ class Scheduler(PBSService):
 
     def add_server_dyn_res(self, custom_resource, script_body=None,
                            res_file=None, apply=True, validate=True,
-                           dirname=None, host=None, perm=0700,
+                           dirname=None, host=None, perm="0700",
                            prefix='PtlPbsSvrDynRes', suffix='.scr'):
         """
         Add a root owned server dynamic resource script or file to the
@@ -11278,12 +11296,12 @@ class Scheduler(PBSService):
         if not os.path.exists(sched_priv_dir):
             self.du.mkdir(path=sched_priv_dir, sudo=True)
             self.du.run_copy(self.hostname, self.dflt_resource_group_file,
-                             self.resource_group_file, mode=0644,
+                             self.resource_group_file, mode=644,
                              sudo=True)
             self.du.run_copy(self.hostname, self.dflt_holidays_file,
-                             self.holidays_file, mode=0644, sudo=True)
+                             self.holidays_file, mode=644, sudo=True)
             self.du.run_copy(self.hostname, self.dflt_sched_config_file,
-                             self.sched_config_file, mode=0644,
+                             self.sched_config_file, mode=644,
                              sudo=True)
 
         if not os.path.exists(sched_logs_dir):
@@ -11320,8 +11338,14 @@ class Scheduler(PBSService):
         self._save_config_file(conf, hd)
 
         try:
+<<<<<<< HEAD
             with open(outfile, mode) as f:
                 cPickle.dump(sconf, f)
+=======
+            f = open(outfile, mode)
+            pickle.dump(sconf, f)
+            f.close()
+>>>>>>> PBS-22605: PTL framework changes to Python 3
         except:
             self.logger.error('error saving configuration ' + outfile)
             return False
@@ -11468,7 +11492,7 @@ class Scheduler(PBSService):
                 obj.year['valid'] = True
                 if len(entry) > 1:
                     obj.year['value'] = entry[1]
-            elif tag in days_map.keys():   # initialize a day
+            elif tag in list(days_map.keys()):   # initialize a day
                 content.append("\t".join(entry))
                 day = days_map[tag]
                 day['valid'] = True
@@ -11928,7 +11952,7 @@ class Scheduler(PBSService):
                 year['valid'] = True
                 if len(entry) > 1:
                     year['value'] = entry[1]
-            elif tag in days_map.keys():   # initialize self.<day>
+            elif tag in list(days_map.keys()):   # initialize self.<day>
                 day = days_map[tag]
                 day['valid'] = True
                 days_set.append(day)
@@ -12576,7 +12600,7 @@ class FairshareTree(object):
 
         .. note:: The name takes precedence over the id.
         """
-        for node in self.nodes.values():
+        for node in list(self.nodes.values()):
             if name is not None and node.name == name:
                 return node
             if id is not None and node.id == id:
@@ -13012,7 +13036,7 @@ class MoM(PBSService):
                 if not self.delete_vnode_defs():
                     return False
                 self.delete_vnodes()
-            if cmp(self.config, self.dflt_config) != 0:
+            if not (self.config == self.dflt_config):
                 # Clear older mom configuration. Apply default.
                 self.config = {}
                 self.apply_config(self.dflt_config, hup=False, restart=False)
@@ -13050,8 +13074,14 @@ class MoM(PBSService):
                 self._save_config_file(conf,
                                        os.path.join(mpriv, 'config.d', f))
         try:
+<<<<<<< HEAD
             with open(outfile, mode) as f:
                 cPickle.dump(mconf, f)
+=======
+            f = open(outfile, mode)
+            pickle.dump(mconf, f)
+            f.close()
+>>>>>>> PBS-22605: PTL framework changes to Python 3
         except:
             self.logger.error('error saving configuration to ' + outfile)
             return False
@@ -13166,7 +13196,7 @@ class MoM(PBSService):
                 vdef += [self.shortname + ": resources_available.ncpus=0"]
                 vdef += [self.shortname + ": resources_available.mem=0"]
 
-        for n in xrange(numnodes):
+        for n in range(numnodes):
             vnid = name + pre + str(n) + post
             if sethost:
                 if vnodes_per_host > 1:
@@ -13300,7 +13330,7 @@ class MoM(PBSService):
         :type hup: bool
         :returns: True on success and False otherwise.
         """
-        self.config = dict(self.config.items() + conf.items())
+        self.config = dict(list(self.config.items()) + list(conf.items()))
         try:
             fn = self.du.create_temp_file()
             with open(fn, 'w+') as f:
@@ -13520,7 +13550,7 @@ class MoM(PBSService):
         if not ret:
             self.logger.error('error chowning pelog to root')
             return False
-        ret = self.du.chmod(self.hostname, path=pelog, mode=0755, sudo=True)
+        ret = self.du.chmod(self.hostname, path=pelog, mode="0755", sudo=True)
         return ret
 
     def prologue(self, body=None, src=None):
@@ -13542,7 +13572,7 @@ class MoM(PBSService):
         pass
 
     def add_mom_dyn_res(self, custom_resource, script_body=None,
-                        res_file=None, dirname=None, host=None, perm=0700,
+                        res_file=None, dirname=None, host=None, perm=700,
                         prefix='PtlPbsMomDynRes', suffix='.scr'):
         """
         Add a root owned mom dynamic resource script or file to the mom
@@ -13676,7 +13706,7 @@ class ResourceResv(PBSObject):
         exechosts = cls.utils.parse_exechost(exechost)
         if exechosts:
             for h in exechosts:
-                eh = h.keys()[0]
+                eh = list(h.keys())[0]
                 if eh not in hosts:
                     hosts.append(eh)
         return hosts
@@ -13697,7 +13727,7 @@ class ResourceResv(PBSObject):
         execvnodes = PbsTypeExecVnode(execvnode)
         if execvnodes:
             for n in execvnodes:
-                ev = n.keys()[0]
+                ev = list(n.keys())[0]
                 if ev not in vnodes:
                     vnodes.append(ev)
         return vnodes
@@ -13796,8 +13826,8 @@ class Job(ResourceResv):
         if isinstance(a, list):
             a = OrderedDict(a)
 
-        self.attributes = OrderedDict(self.dflt_attributes.items() +
-                                      self.attributes.items() + a.items())
+        self.attributes = OrderedDict(list(self.dflt_attributes.items()) +
+                                      list(self.attributes.items()) + list(a.items()))
 
         if self.platform == 'cray' or self.platform == 'craysim':
             s = 'Resource_List.select' in a
@@ -13807,8 +13837,8 @@ class Job(ResourceResv):
                 select = a['Resource_List.select']
                 a['Resource_List.select'] = self.add_cray_vntype(select)
 
-        self.custom_attrs = OrderedDict(self.custom_attrs.items() +
-                                        a.items())
+        self.custom_attrs = OrderedDict(list(self.custom_attrs.items()) +
+                                        list(a.items()))
 
     def set_variable_list(self, user=None, workdir=None):
         """
@@ -13933,7 +13963,7 @@ class Job(ResourceResv):
         fn = self.du.create_temp_file(hostname, prefix='PtlPbsJobScript',
                                       asuser=asuser, body=body)
 
-        self.du.chmod(hostname, fn, mode=0755)
+        self.du.chmod(hostname, fn, mode="0755")
         if not self.du.is_localhost(hostname):
             self.du.run_copy(hostname, fn, fn)
         self.script = fn
@@ -13960,7 +13990,7 @@ class Job(ResourceResv):
         """
         script_dir = os.path.dirname(os.path.dirname(__file__))
         script_path = os.path.join(script_dir, 'utils', 'jobs', 'eatcpu.py')
-        DshUtils().chmod(path=script_path, mode=0755)
+        DshUtils().chmod(path=script_path, mode="0755")
         self.set_execargs(script_path, duration)
 
 
@@ -14192,7 +14222,7 @@ class Queue(PBSObject):
             try:
                 self.server.manager(MGR_CMD_UNSET, MGR_OBJ_QUEUE, unsetlist,
                                     self.name)
-            except PbsManagerError, e:
+            except PbsManagerError as e:
                 self.logger.error(e.msg)
 
         for k in self.dflt_attributes.keys():

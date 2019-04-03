@@ -97,6 +97,10 @@ static struct PyModuleDef svr_types_module = {
 	svr_types_module_doc,
 	-1,
 	svr_types_module_methods,
+	NULL,
+	NULL,
+	NULL,
+	NULL
 };
 
 /**

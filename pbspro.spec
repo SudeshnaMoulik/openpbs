@@ -107,8 +107,8 @@ BuildRequires: ncurses-devel
 BuildRequires: perl
 BuildRequires: postgresql-devel >= 9.1
 BuildRequires: postgresql-contrib >= 9.1
-BuildRequires: python-devel >= 2.6
-BuildRequires: python-devel < 3.0
+BuildRequires: python-devel >= 3.6
+BuildRequires: python-devel < 3.7
 BuildRequires: tcl-devel
 BuildRequires: tk-devel
 BuildRequires: swig
@@ -153,8 +153,8 @@ Requires: bash
 Requires: expat
 Requires: postgresql-server >= 9.1
 Requires: postgresql-contrib >= 9.1
-Requires: python >= 2.6
-Requires: python < 3.0
+Requires: python >= 3.6
+Requires: python < 3.7
 Requires: tcl
 Requires: tk
 %if %{defined suse_version}
@@ -188,8 +188,8 @@ Conflicts: pbs-mom
 Conflicts: pbs-cmds
 Requires: bash
 Requires: expat
-Requires: python >= 2.6
-Requires: python < 3.0
+Requires: python >= 3.6
+Requires: python < 3.7
 %if 0%{?suse_version} >= 1500
 Requires: hostname
 %endif
@@ -217,8 +217,8 @@ Conflicts: pbs
 Conflicts: pbs-mom
 Conflicts: pbs-cmds
 Requires: bash
-Requires: python >= 2.6
-Requires: python < 3.0
+Requires: python >= 3.6
+Requires: python < 3.7
 Autoreq: 1
 
 %description %{pbs_client}
@@ -604,3 +604,4 @@ ${RPM_INSTALL_PREFIX:=%{pbs_prefix}}/libexec/pbs_posttrans \
 - Change to make sure that unsupported hook files are not compiled and packaged.
 * Thu May 12 2016 Hiren Vadalia <hiren.vadalia@altair.com> - 1.0
 - Initial commit of pbspro
+

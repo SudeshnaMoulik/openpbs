@@ -229,13 +229,6 @@ pbs_python_write_error_to_log(const char *emsg)
 	PyObject *exc_traceback = NULL; /* NEW refrence, please DECREF */
 	PyObject *exc_string = NULL;    /* the exception message to be written to pbs log */
 
-	PyObject *pystr = NULL;
-	PyObject *module_name = NULL;
-	PyObject *pyth_module = NULL;
-	PyObject *pyth_func = NULL;
-	//char *full_backtrace = NULL;
-	char *str = NULL;
-
 	/* get the exception */
 	if (!PyErr_Occurred()) {
 		log_err(PBSE_INTERNAL, __func__, "error handler called but no exception raised!");
@@ -243,10 +236,6 @@ pbs_python_write_error_to_log(const char *emsg)
 	}
 
 	PyErr_Fetch(&exc_type, &exc_value, &exc_traceback);
-	PyErr_NormalizeException(&exc_type, &exc_value, &exc_traceback);
-	if(exc_traceback != NULL){
-		PyException_SetTraceback(exc_value, exc_traceback);
-	}
 	PyErr_Clear(); /* just in case, not clear from API doc */
 
 	exc_string = NULL;
@@ -278,34 +267,6 @@ pbs_python_write_error_to_log(const char *emsg)
 	if (log_buffer[0] != '\0')
 		log_err(PBSE_INTERNAL, emsg, log_buffer);
 
-	//module_name = PyUnicode_FromString("traceback");
-	//pyth_module = PyImport_Import(module_name);
-	pyth_module = PyImport_ImportModule("traceback");
-	Py_XDECREF(module_name);
-
-	if (pyth_module == NULL){
-		//full_backtrace = NULL;
-		snprintf(log_buffer, LOG_BUF_SIZE-1, "%s", "No full backtrace");
-		log_err(PBSE_INTERNAL, emsg, log_buffer);
-		goto ERROR_EXIT;
-	}
-	pyth_func = PyObject_GetAttrString(pyth_module, "format_exception");
-	if (pyth_func && PyCallable_Check(pyth_func)) {
-		PyObject *pyth_val;
-
-		pyth_val = PyObject_CallFunctionObjArgs(pyth_func, exc_type, exc_value, exc_traceback);
-		pystr = PyObject_Str(pyth_val);
-		str = PyUnicode_AsUTF8(pystr);
-		//full_backtrace = strdup(str);
-		snprintf(log_buffer, LOG_BUF_SIZE-1, "%s", "Printing full backtrace");
-		log_err(PBSE_INTERNAL, emsg, log_buffer);
-		snprintf(log_buffer, LOG_BUF_SIZE-1, "%s", str);
-		log_err(PBSE_INTERNAL, emsg, log_buffer);
-		Py_XDECREF(pyth_val);
-	}
-	PyErr_Clear(); /* just in case, not clear from API doc */
-
-ERROR_EXIT:
 	Py_XDECREF(exc_type);
 	Py_XDECREF(exc_value);
 

@@ -2467,21 +2467,21 @@ which_suffixset(MPUG *pmpug)
 		return (vld_python);
 	else if (strcmp("lib/python/altair/pbs/v1", pmpug->path) == 0)
 		return (vld_python);
-	else if (strcmp("lib/python/python2.5", pmpug->path) == 0)
+	else if (strcmp("lib/python/python3.6", pmpug->path) == 0)
 		return (vld_python);
-	else if (strcmp("lib/python/python2.5/logging", pmpug->path) == 0)
+	else if (strcmp("lib/python/python3.6/logging", pmpug->path) == 0)
 		return (vld_python);
-	else if (strcmp("lib/python/python2.5/shared", pmpug->path) == 0)
+	else if (strcmp("lib/python/python3.6/shared", pmpug->path) == 0)
 		return (vld_python);
-	else if (strcmp("lib/python/python2.5/xml", pmpug->path) == 0)
+	else if (strcmp("lib/python/python3.6/xml", pmpug->path) == 0)
 		return (vld_python);
-	else if (strcmp("lib/python/python2.5/xml/dom", pmpug->path) == 0)
+	else if (strcmp("lib/python/python3.6/xml/dom", pmpug->path) == 0)
 		return (vld_python);
-	else if (strcmp("lib/python/python2.5/xml/etree", pmpug->path) == 0)
+	else if (strcmp("lib/python/python3.6/xml/etree", pmpug->path) == 0)
 		return (vld_python);
-	else if (strcmp("lib/python/python2.5/xml/parsers", pmpug->path) == 0)
+	else if (strcmp("lib/python/python3.6/xml/parsers", pmpug->path) == 0)
 		return (vld_python);
-	else if (strcmp("lib/python/python2.5/xml/sax", pmpug->path) == 0)
+	else if (strcmp("lib/python/python3.6/xml/sax", pmpug->path) == 0)
 		return (vld_python);
 	else
 		return NULL;

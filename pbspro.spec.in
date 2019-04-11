@@ -107,8 +107,8 @@ BuildRequires: ncurses-devel
 BuildRequires: perl
 BuildRequires: postgresql-devel >= 9.1
 BuildRequires: postgresql-contrib >= 9.1
-BuildRequires: python-devel >= 3.6
-BuildRequires: python-devel < 3.7
+BuildRequires: python36-devel >= 3.6
+BuildRequires: python36-devel < 3.7
 BuildRequires: tcl-devel
 BuildRequires: tk-devel
 BuildRequires: swig

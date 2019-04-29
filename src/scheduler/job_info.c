@@ -4140,7 +4140,7 @@ formula_evaluate(char *formula, resource_resv *resresv, resource_req *resreq)
 		"ex = None\n"
 		"try:\n"
 		"\t_FORMANS_ = eval(\"%s\", globals_dict, locals())\n"
-		"except Exception, ex:"
+		"except Exception as ex:"
 		"\t_PBS_PYTHON_EXCEPTIONSTR_=str(ex)\n", formula);
 
 	PyRun_SimpleString(formula_buf);

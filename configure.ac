@@ -349,6 +349,11 @@ AC_CONFIG_FILES([
 	buildutils/Makefile
 	buildutils/pbs_mkdirs
 	doc/Makefile
+        test/Makefile
+	test/fw/Makefile
+	test/tests/Makefile
+	test/fw/setup.py
+        test/fw/ptl/__init__.py
 	src/Makefile
 	src/cmds/Makefile
 	src/cmds/mpiexec

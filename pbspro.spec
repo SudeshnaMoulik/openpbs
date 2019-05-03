@@ -89,7 +89,7 @@ Prefix: %{?pbs_prefix}%{!?pbs_prefix:%{_prefix}}
 
 %bcond_with alps
 %bcond_with cpuset
-#%bcond_with ptl
+%bcond_with ptl
 
 BuildRoot: %{buildroot}
 BuildRequires: gcc
@@ -254,7 +254,7 @@ HPC clusters, clouds and supercomputers.
 Summary: PBS Test Lab for testing PBS Professional
 Group: System Environment/Base
 Requires: python-nose
-Requires: python-beautifulsoup
+Requires: python-beautifulsoup4
 %if 0%{?rhel}
 Requires: pexpect
 %else
@@ -287,6 +287,9 @@ cd build
 ../configure \
 	PBS_VERSION=%{pbs_version} \
 	--prefix=%{pbs_prefix} \
+%if %{with ptl}
+	--enable-ptl \
+%endif
 %if %{defined suse_version}
 	--libexecdir=%{pbs_prefix}/libexec \
 %endif
@@ -534,14 +537,14 @@ ${RPM_INSTALL_PREFIX:=%{pbs_prefix}}/libexec/pbs_posttrans \
 %doc README.md
 %license LICENSE
 
-#%if %{with ptl}
-#%files %{pbs_ptl}
-#%defattr(-,root,root, -)
-#%dir %{ptl_prefix}
-#%{ptl_prefix}/*
-#%{_sysconfdir}/profile.d/ptl.csh
-#%{_sysconfdir}/profile.d/ptl.sh
-#%endif
+%if %{with ptl}
+%files %{pbs_ptl}
+%defattr(-,root,root, -)
+%dir %{ptl_prefix}
+%{ptl_prefix}/*
+%{_sysconfdir}/profile.d/ptl.csh
+%{_sysconfdir}/profile.d/ptl.sh
+%endif
 
 %changelog
 * Wed Mar 20 2019 Minghui Liu <mliu@altair.com> - 1.27

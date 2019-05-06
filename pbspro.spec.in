@@ -77,6 +77,8 @@
 %define have_systemd 1
 %endif
 
+%global __python %{__python3}
+
 Name: %{pbs_name}
 Version: %{pbs_version}
 Release: %{pbs_release}

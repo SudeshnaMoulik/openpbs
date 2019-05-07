@@ -155,8 +155,8 @@ Requires: bash
 Requires: expat
 Requires: postgresql-server >= 9.1
 Requires: postgresql-contrib >= 9.1
-Requires: python >= 3.6
-Requires: python < 3.7
+Requires: python36 >= 3.6
+Requires: python36 < 3.7
 Requires: tcl
 Requires: tk
 %if %{defined suse_version}
@@ -190,8 +190,8 @@ Conflicts: pbs-mom
 Conflicts: pbs-cmds
 Requires: bash
 Requires: expat
-Requires: python >= 3.6
-Requires: python < 3.7
+Requires: python36 >= 3.6
+Requires: python36 < 3.7
 %if 0%{?suse_version} >= 1500
 Requires: hostname
 %endif
@@ -219,8 +219,8 @@ Conflicts: pbs
 Conflicts: pbs-mom
 Conflicts: pbs-cmds
 Requires: bash
-Requires: python >= 3.6
-Requires: python < 3.7
+Requires: python36 >= 3.6
+Requires: python36 < 3.7
 Autoreq: 1
 
 %description %{pbs_client}

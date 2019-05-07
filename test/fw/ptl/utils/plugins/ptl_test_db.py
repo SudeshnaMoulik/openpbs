@@ -1564,7 +1564,8 @@ class HTMLDb(DBType):
         d['status'] = data['status']
         d['status_data'] = data['status_data']
         d['duration'] = str(data['duration'])
-        self.__dbobj[_TESTRESULT_TN].seek(-27, os.SEEK_END)
+        self.__dbobj[_TESTRESULT_TN].seek(0, os.SEEK_END)
+        self.__dbobj[_TESTRESULT_TN].seek(self.__dbobj[_TESTRESULT_TN].tell() -27, os.SEEK_SET)
         t = self.__dbobj[_TESTRESULT_TN].readline().strip()
         line = ''
         if t != '[':
@@ -1572,7 +1573,8 @@ class HTMLDb(DBType):
         else:
             line += '\n'
         line += str(d) + '\n];</script></body></html>'
-        self.__dbobj[_TESTRESULT_TN].seek(-26, os.SEEK_END)
+        self.__dbobj[_TESTRESULT_TN].seek(0, os.SEEK_END)
+        self.__dbobj[_TESTRESULT_TN].seek(self.__dbobj[_TESTRESULT_TN].tell() -26, os.SEEK_SET)
         self.__dbobj[_TESTRESULT_TN].write(line)
         self.__dbobj[_TESTRESULT_TN].flush()
         self.__index += 1

@@ -205,7 +205,7 @@ def pbs_statobj(type, name=None, connect_server=None, filter_queue=None):
                 if (pr == None):
                     _pbs_v1.logmsg(_pbs_v1.LOG_DEBUG,
                                    "pbs_statobj: missing %s" % (n))
-                    a = a.__next__
+                    a = a.next
                     continue
 
                 vo = getattr(pr, r)
@@ -238,9 +238,9 @@ def pbs_statobj(type, name=None, connect_server=None, filter_queue=None):
                         server_data_fp.write("%s.%s=%s\n" %
                                              (header_str, n, ",".join(vl)))
 
-            a = a.__next__
+            a = a.next
 
-        b = b.__next__
+        b = b.next
 
     pbs_disconnect(con)
     _pbs_v1.set_python_mode()
@@ -1065,7 +1065,7 @@ class pbs_iter():
 
     # NAS localmod 014
     if NAS_mod != None and NAS_mod != 0:
-        def next(self):
+        def __next__(self):
             if self._caller == "pbs_python":
                 if not hasattr(self, "bs") or self.bs == None:
                     if not _pbs_v1.use_static_data():
@@ -1149,7 +1149,7 @@ class pbs_iter():
                             if (pr == None):
                                 _pbs_v1.logmsg(_pbs_v1.LOG_DEBUG,
                                                "pbs_statobj: missing %s" % (n))
-                                a = a.__next__
+                                a = a.next
                                 continue
 
                             vo = getattr(pr, r)
@@ -1182,9 +1182,9 @@ class pbs_iter():
                                     server_data_fp.write("%s.%s=%s\n" % (
                                         header_str, n, ",".join(vl)))
 
-                        a = a.__next__
+                        a = a.next
 
-                self.bs = b.__next__
+                self.bs = b.next
 
                 _pbs_v1.set_python_mode()
                 return obj
@@ -1192,7 +1192,7 @@ class pbs_iter():
                 # argument 0 below tells C function we're inside next
                 return _pbs_v1.iter_nextfunc(self, 0, self.obj_name, self.filter1, self.filter2, self.ignore_fin, self.filter_user)
     else:
-        def next(self):
+        def __next__(self):
             if self._caller == "pbs_python":
                 if not hasattr(self, "bs") or self.bs == None:
                     if not _pbs_v1.use_static_data():
@@ -1305,9 +1305,9 @@ class pbs_iter():
                                     server_data_fp.write("%s.%s=%s\n" % (
                                         header_str, n, ",".join(vl)))
 
-                        a = a.__next__
+                        a = a.next
 
-                self.bs = b.__next__
+                self.bs = b.next
 
                 _pbs_v1.set_python_mode()
                 return obj
@@ -1315,3 +1315,4 @@ class pbs_iter():
                 # argument 0 below tells C function we're inside next
                 return _pbs_v1.iter_nextfunc(self, 0, self.obj_name, self.filter1, self.filter2)
 #: C(pbs_iter)
+

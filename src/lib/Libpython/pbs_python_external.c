@@ -115,6 +115,7 @@ pbs_python_ext_start_interpreter(
 	struct stat sbuf;
 	char pbs_python_home[MAXPATHLEN+1];
 	char pbs_python_destlib[MAXPATHLEN+1];
+	char pbs_python_destlib2[MAXPATHLEN+1];
 	int  evtype;
 	int  rc;
 
@@ -135,16 +136,21 @@ pbs_python_ext_start_interpreter(
 
 	memset((char *)pbs_python_home, '\0', MAXPATHLEN+1);
 	memset((char *)pbs_python_destlib, '\0', MAXPATHLEN+1);
+	memset((char *)pbs_python_destlib2, '\0', MAXPATHLEN+1);
 
 	snprintf(pbs_python_home, MAXPATHLEN, "%s/python",
 		pbs_conf.pbs_exec_path);
 	snprintf(pbs_python_destlib, MAXPATHLEN, "%s/lib64/python/altair",
+		pbs_conf.pbs_exec_path);
+	snprintf(pbs_python_destlib2, MAXPATHLEN, "%s/lib64/python/altair/pbs/v1",
 		pbs_conf.pbs_exec_path);
 	rc = stat(pbs_python_destlib, &sbuf);
 	if (rc != 0) {
 		snprintf(pbs_python_destlib, MAXPATHLEN, "%s/lib/python/altair",
 			pbs_conf.pbs_exec_path);
 		rc = stat(pbs_python_destlib, &sbuf);
+		snprintf(pbs_python_destlib2, MAXPATHLEN, "%s/lib/python/altair/pbs/v1",
+			pbs_conf.pbs_exec_path);
 	}
 	if (rc != 0) {
 		log_err(-1, __func__,
@@ -219,6 +225,15 @@ pbs_python_ext_start_interpreter(
 		snprintf(log_buffer, LOG_BUF_SIZE-1,
 			"could not insert %s into sys.path shutting down",
 			pbs_python_destlib);
+		log_buffer[LOG_BUF_SIZE-1] = '\0';
+		log_err(-1, __func__, log_buffer);
+		goto ERROR_EXIT;
+	}
+
+	if (pbs_python_modify_syspath(pbs_python_destlib2, -1) == -1) {
+		snprintf(log_buffer, LOG_BUF_SIZE-1,
+			"could not insert %s into sys.path shutting down",
+			pbs_python_destlib2);
 		log_buffer[LOG_BUF_SIZE-1] = '\0';
 		log_err(-1, __func__, log_buffer);
 		goto ERROR_EXIT;
@@ -309,13 +324,17 @@ pbs_python_ext_quick_start_interpreter(void)
 
 	char pbs_python_home[MAXPATHLEN+1];
 	char pbs_python_destlib[MAXPATHLEN+1];
+	char pbs_python_destlib2[MAXPATHLEN+1];
 
 	memset((char *)pbs_python_home, '\0', MAXPATHLEN+1);
 	memset((char *)pbs_python_destlib, '\0', MAXPATHLEN+1);
+	memset((char *)pbs_python_destlib2, '\0', MAXPATHLEN+1);
 
 	snprintf(pbs_python_home, MAXPATHLEN, "%s/python",
 		pbs_conf.pbs_exec_path);
 	snprintf(pbs_python_destlib, MAXPATHLEN, "%s/lib/python/altair",
+		pbs_conf.pbs_exec_path);
+	snprintf(pbs_python_destlib2, MAXPATHLEN, "%s/lib/python/altair/pbs/v1",
 		pbs_conf.pbs_exec_path);
 
 	Py_NoSiteFlag = 1;
@@ -367,9 +386,17 @@ pbs_python_ext_quick_start_interpreter(void)
 		goto ERROR_EXIT;
 	}
 
+	if (pbs_python_modify_syspath(pbs_python_destlib2, -1) == -1) {
+		snprintf(log_buffer, LOG_BUF_SIZE-1,
+			"could not insert %s into sys.path shutting down",
+			pbs_python_destlib2);
+		log_buffer[LOG_BUF_SIZE-1] = '\0';
+		log_err(-1, __func__, log_buffer);
+		goto ERROR_EXIT;
+	}
+
 	snprintf(log_buffer, LOG_BUF_SIZE-1,
-		"--> Inserted Altair PBS Python modules dir '%s' <--",
-		pbs_python_destlib);
+		"--> Inserted Altair PBS Python modules dir '%s' '%s'<--", pbs_python_destlib, pbs_python_destlib2);
 	log_buffer[LOG_BUF_SIZE-1] = '\0';
 	log_event(PBSEVENT_SYSTEM|PBSEVENT_ADMIN |
 		PBSEVENT_DEBUG, PBS_EVENTCLASS_SERVER,
@@ -885,4 +912,5 @@ ERROR_EXIT:
 
 
 #endif /* PYTHON */
+
 

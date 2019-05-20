@@ -866,8 +866,6 @@ class _event():
     #: m(__getattr__)
 
     def __setattr__(self, name, value):
-        f = open("/tmp/pbs_python.log", 'a')
-        f.write("setattr - "+ str(name)+" "+str(value)+"\n")
         if (name == "_readonly"):
             if _pbs_v1.in_python_mode() and \
                     hasattr(self, "_readonly") and not value:
@@ -884,8 +882,6 @@ class _event():
             raise UnsetAttributeNameError(
                 "event attribute '%s' not found" % (name,))
         super().__setattr__(name, value)
-        f.write("Done setting %s to %s\n" % (name, value))
-        f.close()
     #: m(__setattr__)
 
 

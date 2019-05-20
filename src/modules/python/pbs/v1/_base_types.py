@@ -182,9 +182,6 @@ class PbsAttributeDescriptor():
         if not _IS_SETTABLE(self, obj, value):
             return
 
-        with open("/tmp/pbs_entity.log", "a") as f:
-            f.write("%s \n %s \n" % (str(self._value_type), dir(obj)))
-
         # if in Python (hook script mode), the hook writer has set value to
         # to None, meaning to unset the attribute.
         if (value is None) and _pbs_v1.in_python_mode():
@@ -821,8 +818,6 @@ class pbs_str(str):
     _derived_types = (str,)
 
     def __init__(self, value):
-        with open("/tmp/pbs_python.log", 'a') as f:
-            f.write(str(pbs_str.__mro__)+"\n")
         _pbs_v1.validate_input("job", "Job_Owner", value)
         super().__init__()
 

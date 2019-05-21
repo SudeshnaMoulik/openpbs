@@ -636,75 +636,33 @@ pbs_python_setup_attr_get_value_type(attribute_def *attr_def_p, char *py_type)
 	/* careful long is overloadded so duration comes first */
 	if (TYPE_DURATION(attr_def_p->at_encode)) /* check for time type */
 	{
-		snprintf(log_buffer, LOG_BUF_SIZE-1,
-		"attr %s value type is TYPE_DURATION", attr_def_p->at_name);
-		log_buffer[LOG_BUF_SIZE-1] = '\0';
-		log_err(LOG_DEBUG, __func__, log_buffer);
 		return pbs_python_types_table[PP_TIME_IDX].t_class;
 	}
-
 	if (ATTR_IS_RESC(attr_def_p)){
-		snprintf(log_buffer, LOG_BUF_SIZE-1,
-		"attr %s value type is ATTR_IS_RESC", attr_def_p->at_name);
-		log_buffer[LOG_BUF_SIZE-1] = '\0';
-		log_err(LOG_DEBUG, __func__, log_buffer);
 		return pbs_python_types_table[PP_RESC_IDX].t_class;
 	}
-
 	if (TYPE_SIZE(attr_def_p->at_type)){     /* check for SIZE type */
-		snprintf(log_buffer, LOG_BUF_SIZE-1,
-		"attr %s value type is TYPE_SIZE", attr_def_p->at_name);
-		log_buffer[LOG_BUF_SIZE-1] = '\0';
-		log_err(LOG_DEBUG, __func__, log_buffer);
 		return pbs_python_types_table[PP_SIZE_IDX].t_class;
 	}
 	if (TYPE_ACL(attr_def_p->at_type)){      /* check for ACL type */
-		snprintf(log_buffer, LOG_BUF_SIZE-1,
-		"attr %s value type is TYPE_ACL", attr_def_p->at_name);
-		log_buffer[LOG_BUF_SIZE-1] = '\0';
-		log_err(LOG_DEBUG, __func__, log_buffer);
 		return pbs_python_types_table[PP_ACL_IDX].t_class;
 	}
 	if (TYPE_BOOL(attr_def_p->at_type)){     /* check for BOOL type */
-		snprintf(log_buffer, LOG_BUF_SIZE-1,
-		"attr %s value type is TYPE_BOOL", attr_def_p->at_name);
-		log_buffer[LOG_BUF_SIZE-1] = '\0';
-		log_err(LOG_DEBUG, __func__, log_buffer);
 		return pbs_python_types_table[PP_BOOL_IDX].t_class;
 	}
 	if (TYPE_ARST(attr_def_p->at_type)){     /* check for list of strings */
-		snprintf(log_buffer, LOG_BUF_SIZE-1,
-		"attr %s value type is TYPE_ARST", attr_def_p->at_name);
-		log_buffer[LOG_BUF_SIZE-1] = '\0';
-		log_err(LOG_DEBUG, __func__, log_buffer);
 		return pbs_python_types_table[PP_ARST_IDX].t_class;
 	}
 	if (TYPE_INT(attr_def_p->at_type)){     /* check for int,long,short */
-		snprintf(log_buffer, LOG_BUF_SIZE-1,
-		"attr %s value type is TYPE_INT", attr_def_p->at_name);
-		log_buffer[LOG_BUF_SIZE-1] = '\0';
-		log_err(LOG_DEBUG, __func__, log_buffer);
 		return pbs_python_types_table[PP_INT_IDX].t_class;
 	}
 	if (TYPE_STR(attr_def_p->at_type)){     /* check for str type */
-		snprintf(log_buffer, LOG_BUF_SIZE-1,
-		"attr %s value type is TYPE_STR", attr_def_p->at_name);
-		log_buffer[LOG_BUF_SIZE-1] = '\0';
-		log_err(LOG_DEBUG, __func__, log_buffer);
 		return pbs_python_types_table[PP_STR_IDX].t_class;
 	}
 	if (TYPE_FLOAT(attr_def_p->at_type)){     /* check for float type */
-		snprintf(log_buffer, LOG_BUF_SIZE-1,
-		"attr %s value type is TYPE_FLOAT", attr_def_p->at_name);
-		log_buffer[LOG_BUF_SIZE-1] = '\0';
-		log_err(LOG_DEBUG, __func__, log_buffer);
 		return pbs_python_types_table[PP_FLOAT_IDX].t_class;
 	}
 	if (TYPE_ENTITY(attr_def_p->at_type)){    /* check for entity type */
-		snprintf(log_buffer, LOG_BUF_SIZE-1,
-		"attr %s value type is TYPE_ENTITY", attr_def_p->at_name);
-		log_buffer[LOG_BUF_SIZE-1] = '\0';
-		log_err(LOG_DEBUG, __func__, log_buffer);
 		return pbs_python_types_table[PP_ENTITY_IDX].t_class;
 	}
 	/* all else fails return generic */

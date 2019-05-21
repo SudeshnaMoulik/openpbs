@@ -37,7 +37,6 @@
 
 from tests.interfaces import *
 
-
 class TestPartition(TestInterfaces):
     """
     Test suite to test partition attr
@@ -149,7 +148,7 @@ class TestPartition(TestInterfaces):
         Test to check the set of partition attribute on routing queue
         """
         msg0 = "Route queues are incompatible with the "\
-               "partition attribute enabled"
+               "partition attribute"
         msg1 = "Cannot assign a partition to route queue"
         msg2 = "Qmgr error message do not match"
         try:

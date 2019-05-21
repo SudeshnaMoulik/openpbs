@@ -417,6 +417,8 @@ class TestQstatFormats(TestFunctional):
         attribute with type resource list has to be the last attribute
         in order to hit the bug.
         """
+        self.server.manager(MGR_CMD_SET, NODE, {'resources_available.ncpus' : 3}, 
+                           id=self.mom.shortname)
         j = Job(TEST_USER)
         j.set_sleep_time(100)
         jid = self.server.submit(j)

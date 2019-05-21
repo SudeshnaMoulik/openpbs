@@ -102,7 +102,7 @@ class TestServerDynRes(TestFunctional):
         # Create a server_dyn_res of type long
         resname = ["mybadres"]
         restype = ["long"]
-        script_body = ["echo abc"]
+        script_body = ['echo abc']
 
         # Add it as a server_dyn_res that returns a string output
         filenames = self.setup_dyn_res(resname, restype, script_body)

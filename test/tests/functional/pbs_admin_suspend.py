@@ -148,7 +148,8 @@ class TestAdminSuspend(TestFunctional):
 
         # Adding sleep to avoid failure at resume since PBS licenses
         # might not be available and as a result resume fails
-        time.sleep(2)
+        self.server.expect(SERVER, {'FLicenses':0}, op=GT, max_attempts=60)
+        #time.sleep(2)
 
         # admin-resume job
         self.server.sigjob(jid, 'admin-resume', runas=ROOT_USER)
@@ -878,3 +879,5 @@ pbs.logmsg(pbs.LOG_DEBUG,\
         self.server.expect(NODE, {'state': 'offline'}, id='vn[0]')
         self.server.expect(JOB, {'job_state': 'R', 'substate': 42}, id=jid2)
         self.server.expect(JOB, {'job_state': 'Q'}, id=jid3)
+
+        

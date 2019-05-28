@@ -4237,7 +4237,6 @@ class PBSService(PBSObject):
         """
         if os.path.isfile(infile):
             conf = {}
-<<<<<<< HEAD
             with open(infile, 'r') as f:
                 # load all objects from the Pickled file
                 while True:
@@ -4245,16 +4244,6 @@ class PBSService(PBSObject):
                         conf = cPickle.load(f)
                     except:
                         break
-=======
-            f = open(infile, 'r')
-            # load all objects from the Pickled file
-            while True:
-                try:
-                    conf = pickle.load(f)
-                except:
-                    break
-            f.close()
->>>>>>> PBS-22605: PTL framework changes to Python 3
 
             if objtype and objtype in conf:
                 conf = conf[objtype]
@@ -5250,14 +5239,8 @@ class Server(PBSService):
             conf['qmgr_print_hook'] = ret['out']
 
         try:
-<<<<<<< HEAD
             with open(outfile, mode) as f:
                 cPickle.dump(sconf, f)
-=======
-            f = open(outfile, mode)
-            pickle.dump(sconf, f)
-            f.close()
->>>>>>> PBS-22605: PTL framework changes to Python 3
         except:
             self.logger.error('Error processing file ' + outfile)
             return False
@@ -11338,14 +11321,8 @@ class Scheduler(PBSService):
         self._save_config_file(conf, hd)
 
         try:
-<<<<<<< HEAD
             with open(outfile, mode) as f:
                 cPickle.dump(sconf, f)
-=======
-            f = open(outfile, mode)
-            pickle.dump(sconf, f)
-            f.close()
->>>>>>> PBS-22605: PTL framework changes to Python 3
         except:
             self.logger.error('error saving configuration ' + outfile)
             return False
@@ -13074,14 +13051,8 @@ class MoM(PBSService):
                 self._save_config_file(conf,
                                        os.path.join(mpriv, 'config.d', f))
         try:
-<<<<<<< HEAD
             with open(outfile, mode) as f:
                 cPickle.dump(mconf, f)
-=======
-            f = open(outfile, mode)
-            pickle.dump(mconf, f)
-            f.close()
->>>>>>> PBS-22605: PTL framework changes to Python 3
         except:
             self.logger.error('error saving configuration to ' + outfile)
             return False

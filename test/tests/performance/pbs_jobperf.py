@@ -56,7 +56,7 @@ class TestJobPerf(TestPerformance):
         Sets test level configuration
         """
         testconfig = {}
-        for key, value in config.iteritems():
+        for key, value in config.items():
             if isinstance(value, int):
                 testconfig[key] = int(
                     self.conf[key]) if key in self.conf else value

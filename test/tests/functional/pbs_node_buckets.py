@@ -90,11 +90,11 @@ class TestNodeBuckets(TestFunctional):
              'resources_available.shape': self.shapes[numnode % 7],
              'resources_available.letter': self.letters[numnode % 7]}
 
-        if numnode / 5005 == 0:
+        if numnode // 5005 == 0:
             a['resources_available.bool'] = 'True'
 
         # Yellow buckets get a higher priority
-        if numnode / 1430 == 2:
+        if numnode // 1430 == 2:
             a['Priority'] = 100
 
         return dict(list(attribs.items()) + list(a.items()))

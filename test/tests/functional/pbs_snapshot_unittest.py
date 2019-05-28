@@ -750,7 +750,7 @@ pbs.logmsg(pbs.EVENT_DEBUG,"%s")
         """
         # Skip test if there's no remote mom host available
         if len(self.moms) == 0 or \
-                self.du.is_localhost((self.moms.values()[0]).shortname):
+                self.du.is_localhost((list(self.moms.values())[0]).shortname):
             self.skipTest("test requires a remote mom host as input, "
                           "use -p moms=<mom host>")
 
@@ -798,6 +798,7 @@ pbs.logmsg(pbs.EVENT_DEBUG,"%s")
         except KeyError:
             self.fail("mom_priv/config not found in %s's snapshot" % host2)
 
+    
     def test_snapshot_obf_stress(self):
         """
         A stress test to make sure that snapshot --obufscate really obfuscates

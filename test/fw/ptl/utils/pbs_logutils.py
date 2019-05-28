@@ -336,7 +336,10 @@ class PBSLogUtils(object):
             num_rec += 1
             if num is not None and num_rec > num:
                 break
-            m = tm_tag.match(record)
+            try:
+                m = tm_tag.match(record).decode()
+            except Exception as e:
+                m = tm_tag.match(record)
             if m:
                 rec_times.append(
                     self.convert_date_time(m.group('datetime')))

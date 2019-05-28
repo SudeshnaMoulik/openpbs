@@ -2707,11 +2707,11 @@ class BatchUtils(object):
         :type prefix: str
         :returns: Random string
         """
-        r = [random.choice(string.letters) for _ in range(length)]
+        r = [random.choice(string.ascii_letters) for _ in range(length)]
         r = ''.join([prefix] + r)
         if hasattr(cls, '__uniq_rstr'):
             while r in cls.__uniq_rstr:
-                r = [random.choice(string.letters) for _ in range(length)]
+                r = [random.choice(string.ascii_letters) for _ in range(length)]
                 r = ''.join([prefix] + r)
             cls.__uniq_rstr.append(r)
         else:
@@ -13016,7 +13016,7 @@ class MoM(PBSService):
             if not (self.config == self.dflt_config):
                 # Clear older mom configuration. Apply default.
                 self.config = {}
-                self.apply_config(self.dflt_config, hup=False, restart=False)
+                self.apply_config(self.dflt_config, hup=False, restart=True)
             if restart:
                 self.restart()
             else:

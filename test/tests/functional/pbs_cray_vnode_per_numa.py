@@ -117,7 +117,8 @@ class TestVnodePerNumaNode(TestFunctional):
                              ] += int(n['resources_available.naccelerators'])
             if 'resources_available.accelerator_memory' in list(n.keys()):
                 if n['resources_available.accelerator_memory'][0] != '@':
-                    if n['resources_available.host'] not in list(daccmem.keys()):
+                    if n['resources_available.host'] not in list(
+                            daccmem.keys()):
                         daccmem[n['resources_available.host']] = int(
                             n['resources_available.accelerator_memory'][0:-2])
                     else:

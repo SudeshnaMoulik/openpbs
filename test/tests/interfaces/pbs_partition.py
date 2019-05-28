@@ -37,6 +37,7 @@
 
 from tests.interfaces import *
 
+
 class TestPartition(TestInterfaces):
     """
     Test suite to test partition attr

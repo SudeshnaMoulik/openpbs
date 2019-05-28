@@ -466,7 +466,7 @@ if __name__ == '__main__':
     elif saveconf:
         if os.path.isfile(saveconf):
             answer = input('file ' + saveconf + ' exists, overwrite? '
-                               '[y]/n: ')
+                           '[y]/n: ')
             if answer == 'n':
                 sys.exit(1)
         if not process_obj:

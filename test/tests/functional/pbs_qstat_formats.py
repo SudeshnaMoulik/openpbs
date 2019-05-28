@@ -296,7 +296,7 @@ class TestQstatFormats(TestFunctional):
         f = open(qstat_dsv_out, 'r')
         dsv_out = f.read()
         f.close()
-        dsv_attr_count = len(dsv_out.replace("\|", "").split("|"))
+        dsv_attr_count = len(dsv_out.replace(r"\|", "").split("|"))
         f = open(qstat_oneline_script, 'w')
         f.write(qstat_cmd + ' -f -w ' + str(jid) + ' > ' + qstat_oneline_out)
         f.close()
@@ -306,7 +306,7 @@ class TestQstatFormats(TestFunctional):
         oneline_attr_count = sum(1 for line in open(
             qstat_oneline_out) if not line.isspace())
         list(map(os.remove, [qstat_dsv_script, qstat_dsv_out,
-                        qstat_oneline_script, qstat_oneline_out]))
+                             qstat_oneline_script, qstat_oneline_out]))
         self.assertEqual(dsv_attr_count, oneline_attr_count)
 
     def test_json(self):
@@ -332,7 +332,7 @@ class TestQstatFormats(TestFunctional):
         list(map(os.remove, [qstat_json_script, qstat_json_out]))
         try:
             json_data = json.loads(data)
-        except:
+        except BaseException:
             self.assertTrue(False)
 
     def test_qstat_tag(self):
@@ -417,8 +417,8 @@ class TestQstatFormats(TestFunctional):
         attribute with type resource list has to be the last attribute
         in order to hit the bug.
         """
-        self.server.manager(MGR_CMD_SET, NODE, {'resources_available.ncpus' : 3}, 
-                           id=self.mom.shortname)
+        self.server.manager(MGR_CMD_SET, NODE, {'resources_available.ncpus': 3},
+                            id=self.mom.shortname)
         j = Job(TEST_USER)
         j.set_sleep_time(100)
         jid = self.server.submit(j)
@@ -575,7 +575,7 @@ class TestQstatFormats(TestFunctional):
         with special chars in env
         """
         os.environ["DOUBLEQUOTES"] = 'hi"ha'
-        os.environ["REVERSESOLIDUS"] = 'hi\ha'
+        os.environ["REVERSESOLIDUS"] = r'hi\ha'
 
         self.server.manager(MGR_CMD_SET, SERVER,
                             {'default_qsub_arguments': '-V'})

@@ -179,7 +179,7 @@ class PTLTestInfo(Plugin):
                 k = getattr(suite, k)
                 try:
                     k.__name__
-                except:
+                except BaseException:
                     # not a test case, ignore
                     continue
                 self.total_case += 1
@@ -227,7 +227,7 @@ class PTLTestInfo(Plugin):
                 tc = getattr(suite, k)
                 try:
                     tc.__name__
-                except:
+                except BaseException:
                     # not a test case, ignore
                     continue
                 tcd['doc'] = str(tc.__doc__)
@@ -248,13 +248,15 @@ class PTLTestInfo(Plugin):
                             self.__tags_tree[tag] = {}
                         if n not in list(self.__tags_tree[tag].keys()):
                             self.__tags_tree[tag][n] = deepcopy(tsd)
-                        if 'tclist' not in list(self.__tags_tree[tag][n].keys()):
+                        if 'tclist' not in list(
+                                self.__tags_tree[tag][n].keys()):
                             self.__tags_tree[tag][n]['tclist'] = {}
                         self.__tags_tree[tag][n]['tclist'][k] = deepcopy(tcd)
                 else:
                     if n not in list(self.__tags_tree['NoTags'].keys()):
                         self.__tags_tree['NoTags'][n] = deepcopy(tsd)
-                    if 'tclist' not in list(self.__tags_tree['NoTags'][n].keys()):
+                    if 'tclist' not in list(
+                            self.__tags_tree['NoTags'][n].keys()):
                         self.__tags_tree['NoTags'][n]['tclist'] = {}
                     self.__tags_tree['NoTags'][n]['tclist'][k] = deepcopy(tcd)
         if len(tcs.keys()) > 0:
@@ -275,7 +277,7 @@ class PTLTestInfo(Plugin):
         for k in suites:
             try:
                 suite = eval(k, globals(), self._tree)
-            except:
+            except BaseException:
                 unknown.append(k)
                 continue
             func(suite)

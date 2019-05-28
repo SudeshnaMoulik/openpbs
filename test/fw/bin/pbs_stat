@@ -162,7 +162,7 @@ class SiteReportFormatter:
             snap = snap.replace("snapshot_", "")
             if snap[0] == '_':
                 snap = snap[1:]
-            m = re.search("(?P<dtm>\d{6}_\d{6})", snap)
+            m = re.search(r"(?P<dtm>\d{6}_\d{6})", snap)
             if m:
                 _tm = m.group("dtm")
                 _kt = time.mktime(time.strptime(_tm, "%y%m%d_%H%M%S"))
@@ -864,7 +864,9 @@ if __name__ == '__main__':
                                      db_access=db_access,
                                      resolve_indirectness=indirectness)
             if json_on:
-                print(CliUtils.__json__(server.utils.decode_dictlist(statinfo)))
+                print(
+                    CliUtils.__json__(
+                        server.utils.decode_dictlist(statinfo)))
             else:
                 server.utils.show(statinfo, fmt=fmt)
             sys.exit(0)

@@ -461,7 +461,7 @@ class TestPBSSnapshot(TestFunctional):
             all_content = rstatfd.read()
             self.assertFalse(str(TEST_USER1) in all_content)
             self.assertFalse(str(TSTGRP0) in all_content)
-    
+
     def test_obfuscate_acct_bad(self):
         """
         Test that pbs_snapshot --obfuscate can work with bad accounting records

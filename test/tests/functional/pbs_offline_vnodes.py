@@ -259,9 +259,11 @@ class TestOfflineVnode(TestFunctional):
         self.server.expect(JOB, {ATTR_state: 'Q'}, id=jid)
 
         self.server.expect(NODE, {ATTR_NODE_state: 'offline'},
-                           id=list(self.moms.values())[0].shortname, interval=2)
+                           id=list(self.moms.values())[0].shortname,
+                           interval=2)
         self.server.expect(NODE, {ATTR_NODE_state: 'free'},
-                           id=list(self.moms.values())[1].shortname, interval=2)
+                           id=list(self.moms.values())[1].shortname,
+                           interval=2)
 
         self.verify_vnodes_state('free')
 
@@ -311,7 +313,8 @@ class TestOfflineVnode(TestFunctional):
         jid = self.server.submit(j1)
 
         self.server.expect(NODE, {ATTR_NODE_state: 'free'},
-                           id=list(self.moms.values())[0].shortname, interval=2)
+                           id=list(self.moms.values())[0].shortname,
+                           interval=2)
         # sister mom's vnode gets offlined due to hook exception
         self.server.expect(NODE,
                            {ATTR_NODE_state: 'offline',

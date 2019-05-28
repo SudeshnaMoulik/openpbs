@@ -81,6 +81,7 @@ def _load_data(objfile=None, servername=None, user=None):
     s = Server(servername, stat=False)
     return (s, _data)
 
+
 if __name__ == '__main__':
 
     if len(sys.argv) < 2:
@@ -89,7 +90,7 @@ if __name__ == '__main__':
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "c:e:o:u:f:s:h")
-    except:
+    except BaseException:
         usage()
         sys.exit(1)
 
@@ -321,9 +322,9 @@ if __name__ == '__main__':
             except PbsMoveError as e:
                 sys.stdout.write(str(rc))
                 sys.stderr.write(repr(e))
-                sys.exit(e.rc) 
-    
-    #elif cmd == 'alterresv':
+                sys.exit(e.rc)
+
+    # elif cmd == 'alterresv':
     #    if objid is None:
     #        print '1'
     #    else:
@@ -335,7 +336,7 @@ if __name__ == '__main__':
     #            sys.stdout.write(str(rc))
     #            sys.stderr.write(repr(e))
     #            sys.exit(e.rc)
-    
+
     elif cmd == 'manager':
         (s, _data) = _load_data(objfile, servername, user)
         if 'cmd' in _data:

@@ -59,16 +59,16 @@ import collections
 try:
     import psycopg2
     PSYCOPG = True
-except:
+except BaseException:
     PSYCOPG = False
 
 try:
     from ptl.lib.pbs_ifl import *
     API_OK = True
-except:
+except BaseException:
     try:
         from ptl.lib.pbs_ifl_mock import *
-    except:
+    except BaseException:
         sys.stderr.write("failed to import pbs_ifl, run pbs_swigify " +
                          "to make it\n")
         raise ImportError
@@ -271,7 +271,7 @@ class PtlConfig(object):
                 k = k.strip()
                 v = v.strip()
                 self.options[k] = v
-            except:
+            except BaseException:
                 self.logger.error('Error parsing line ' + line)
         for k, v in list(self.options.items()):
             if k in os.environ:
@@ -846,7 +846,7 @@ class PbsTypeSelect(list):
             if 'mem' in k:
                 try:
                     v = PbsTypeSize(v).value
-                except:
+                except BaseException:
                     # failed so we guessed wrong on the type
                     pass
             if isinstance(v, int) or v.isdigit():
@@ -1159,7 +1159,7 @@ class PbsUser(object):
             self.gid = _user.pw_gid
             self.shell = _user.pw_shell
             self.gecos = _user.pw_gecos
-        except:
+        except BaseException:
             pass
 
         if groups is None:
@@ -1209,7 +1209,7 @@ class PbsGroup(object):
         try:
             _group = grp.getgrnam(self.name)
             self.gid = _group.gr_gid
-        except:
+        except BaseException:
             pass
 
         if users is None:
@@ -1242,8 +1242,8 @@ class BatchUtils(object):
     data structures
     """
 
-    legal = "\d\w:\+=\[\]~"
-    chunks_tag = re.compile("(?P<chunk>\([\d\w:\+=\[\]~]\)[\+]?)")
+    legal = r"\d\w:\+=\[\]~"
+    chunks_tag = re.compile(r"(?P<chunk>\([\d\w:\+=\[\]~]\)[\+]?)")
     chunk_tag = re.compile("(?P<vnode>[\w\d\[\]]+):" +
                            "(?P<resources>[\d\w:\+=\[\]~])+\)")
 
@@ -1262,12 +1262,12 @@ class BatchUtils(object):
                                   re.VERBOSE)
     dt_re = '(?P<dt_from>\d\d/\d\d/\d\d\d\d \d\d:\d\d)' + \
             '[\s]+' + \
-            '(?P<dt_to>\d\d/\d\d/\d\d\d\d \d\d:\d\d)'
+            r'(?P<dt_to>\d\d/\d\d/\d\d\d\d \d\d:\d\d)'
     dt_tag = re.compile(dt_re)
-    hms_tag = re.compile('(?P<hr>\d\d):(?P<mn>\d\d):(?P<sc>\d\d)')
+    hms_tag = re.compile(r'(?P<hr>\d\d):(?P<mn>\d\d):(?P<sc>\d\d)')
     lim_tag = re.compile("(?P<limtype>[a-z_]+)[\.]*(?P<resource>[\w\d-]*)"
-                         "=[\s]*\[(?P<entity_type>[ugpo]):"
-                         "(?P<entity_name>[\w\d-]+)"
+                         r"=[\s]*\[(?P<entity_type>[ugpo]):"
+                         r"(?P<entity_name>[\w\d-]+)"
                          "=(?P<entity_value>[\d\w]+)\][\s]*")
 
     def __init__(self):
@@ -1579,7 +1579,7 @@ class BatchUtils(object):
         try:
             with open(filename, mode) as f:
                 self.display_dictlist(l, f)
-        except:
+        except BaseException:
             self.logger.error('error writing to file ' + filename)
             raise
 
@@ -1629,7 +1629,7 @@ class BatchUtils(object):
         try:
             with open(fpath, 'r') as f:
                 lines = f.readlines()
-        except:
+        except BaseException:
             self.logger.error('error converting nodes to vnode def')
             return None
 
@@ -1646,7 +1646,7 @@ class BatchUtils(object):
         :type name: str
         :param fmt: Optional formatting string, uses %n for
                     object name, %a for attributes, for example
-                    a format of '%nE{\}nE{\}t%aE{\}n' will display
+                    a format of r'%nE{\}nE{\}t%aE{\}n' will display
                     objects with their name starting on the first
                     column, a new line, and attributes indented by
                     a tab followed by a new line at the end.
@@ -1932,7 +1932,7 @@ class BatchUtils(object):
         try:
             with open(fpath, 'r') as f:
                 lines = f.readlines()
-        except:
+        except BaseException:
             self.logger.error('error converting file ' + fpath + ' to batch')
             return None
 
@@ -1952,7 +1952,7 @@ class BatchUtils(object):
         try:
             with open(fpath, 'w') as f:
                 self.display_batch_status(bs, writer=f)
-        except:
+        except BaseException:
             self.logger.error('error converting batch status to file')
 
     def batch_to_vnodedef(self, bs):
@@ -2265,7 +2265,7 @@ class BatchUtils(object):
         """
         try:
             ret = time.mktime(time.strptime(st, '%a %b %d %H:%M:%S %Y'))
-        except:
+        except BaseException:
             ret = st
         return ret
 
@@ -2289,7 +2289,7 @@ class BatchUtils(object):
                                                             fmt=_f)
                 dtime_to = self.convert_datetime_to_epoch(m.group('dt_to'),
                                                           fmt=_f)
-            except:
+            except BaseException:
                 self.logger.error('error converting dedicated time')
         return (dtime_from, dtime_to)
 
@@ -2814,7 +2814,7 @@ class PbsTypeFGCLimit(object):
     :returns: FGC limit entry of given format
     """
 
-    fgc_attr_pat = re.compile("(?P<ltype>[a-z_]+)[\.]*(?P<resource>[\w\d-]*)")
+    fgc_attr_pat = re.compile(r"(?P<ltype>[a-z_]+)[\.]*(?P<resource>[\w\d-]*)")
     fgc_val_pat = re.compile("[\s]*\[(?P<etype>[ugpo]):(?P<ename>[\w\d-]+)"
                              "=(?P<eval>[\d]+)\][\s]*")
     utils = BatchUtils()
@@ -3472,7 +3472,7 @@ class PBSService(PBSObject):
                     self.logger.info('FQDN name ' + self.fqdn + ' differs '
                                      'from name provided ' + self.hostname)
                     self.hostname = self.fqdn
-            except:
+            except BaseException:
                 pass
         else:
             self.fqdn = self.hostname
@@ -3966,7 +3966,7 @@ class PBSService(PBSObject):
                     n = n - len(day_lines)
                     if n <= 0:
                         break
-        except:
+        except BaseException:
             self.logger.error('error in log_lines ')
             traceback.print_exc()
             return None
@@ -4038,7 +4038,7 @@ class PBSService(PBSObject):
         """
         try:
             from ptl.utils.pbs_logutils import PBSLogUtils
-        except:
+        except BaseException:
             _msg = 'error loading ptl.utils.pbs_logutils'
             raise PtlLogMatchError(rc=1, rv=False, msg=_msg)
 
@@ -4087,7 +4087,7 @@ class PBSService(PBSObject):
             # an open file descriptor, we close here but ignore errors in case
             # any were raised for all irrelevant cases
             lines.close()
-        except:
+        except BaseException:
             pass
         if (rv is None and existence) or (rv is not None and not existence):
             _msg = infomsg + attemptmsg
@@ -4242,7 +4242,7 @@ class PBSService(PBSObject):
                 while True:
                     try:
                         conf = cPickle.load(f)
-                    except:
+                    except BaseException:
                         break
 
             if objtype and objtype in conf:
@@ -4582,7 +4582,7 @@ class Server(PBSService):
         'update_attributes': True,
     }
     # this pattern is a bit relaxed to match common developer build numbers
-    version_tag = re.compile("[a-zA-Z_]*(?P<version>[\d\.]+.[\w\d\.]*)[\s]*")
+    version_tag = re.compile(r"[a-zA-Z_]*(?P<version>[\d\.]+.[\w\d\.]*)[\s]*")
 
     actions = ExpectActions()
 
@@ -5118,7 +5118,7 @@ class Server(PBSService):
                         if 'queue' in list(node.keys()):
                             self.manager(MGR_CMD_UNSET, NODE, 'queue',
                                          node['id'])
-                except:
+                except BaseException:
                     pass
                 self.manager(MGR_CMD_DELETE, QUEUE, id=queues)
             a = {ATTR_qtype: 'Execution',
@@ -5181,7 +5181,7 @@ class Server(PBSService):
             try:
                 rescs = self.status(RSC)
                 rescs = [r['id'] for r in rescs]
-            except:
+            except BaseException:
                 rescs = []
             if len(rescs) > 0:
                 self.manager(MGR_CMD_DELETE, RSC, id=rescs)
@@ -5241,7 +5241,7 @@ class Server(PBSService):
         try:
             with open(outfile, mode) as f:
                 cPickle.dump(sconf, f)
-        except:
+        except BaseException:
             self.logger.error('Error processing file ' + outfile)
             return False
 
@@ -5754,7 +5754,7 @@ class Server(PBSService):
                             elif obj_type == PBS_HOOK:
                                 return [h.attributes for h in
                                         list(self.pbshooks.values())]
-                    except:
+                    except BaseException:
                         pass
                 else:
                     bs = pbs_stathook(c, id, a, extend)
@@ -7843,7 +7843,7 @@ class Server(PBSService):
                 name = e0
                 r = Resource(name, rtype, flag)
                 resources[name] = r
-        except:
+        except BaseException:
             raise PbsResourceError(rc=1, rv=False,
                                    msg="error in parse_resources")
         return resources
@@ -8384,7 +8384,7 @@ class Server(PBSService):
             try:
                 self.deljob(id=job_ids, extend=delete_xt, runas=runas,
                             wait=True)
-            except:
+            except BaseException:
                 pass
         rv = self.expect(JOB, {'job_state': 0}, count=True, op=SET)
         if not rv:
@@ -8408,7 +8408,7 @@ class Server(PBSService):
             if len(resvs) > 0:
                 try:
                     self.delresv(resvs, logerr=False, runas=runas)
-                except:
+                except BaseException:
                     pass
                 reservations = self.status(RESV, level=logging.DEBUG)
 
@@ -8921,7 +8921,7 @@ class Server(PBSService):
                         if a.endswith('mem'):
                             try:
                                 amt = PbsTypeSize().encode(amt)
-                            except:
+                            except BaseException:
                                 # we guessed the type incorrectly
                                 pass
                     else:
@@ -9028,7 +9028,7 @@ class Server(PBSService):
                             avail_nodes_by_time[tm].append(nodes[n])
                             try:
                                 nodes_id.remove(n)
-                            except:
+                            except BaseException:
                                 pass
                         else:
                             ncopy = copy.copy(nodes[n])
@@ -9065,7 +9065,7 @@ class Server(PBSService):
                                 avail_nodes_by_time[tm].append(nodes[n])
                                 try:
                                     nodes_id.remove(n)
-                                except:
+                                except BaseException:
                                     pass
                             else:
                                 ncopy = copy.copy(nodes[n])
@@ -9331,7 +9331,7 @@ class Server(PBSService):
         if createnode:
             try:
                 statm = self.status(NODE, id=natvnode)
-            except:
+            except BaseException:
                 statm = []
             if len(statm) >= 1:
                 _m = 'Mom %s already exists, not creating' % (natvnode)
@@ -9508,7 +9508,7 @@ class Server(PBSService):
         srv_stat = self.status(SERVER, 'sync_mom_hookfiles_timeout')
         try:
             sync_val = srv_stat[0]['sync_mom_hookfiles_timeout']
-        except:
+        except BaseException:
             self.logger.info("Setting sync_mom_hookfiles_timeout to 15s")
             self.manager(MGR_CMD_SET, SERVER,
                          {"sync_mom_hookfiles_timeout": 15})
@@ -10243,7 +10243,7 @@ class Server(PBSService):
                               snapmap=self.snapmap)
             try:
                 svr.manager(MGR_CMD_DELETE, NODE, None, id="")
-            except:
+            except BaseException:
                 pass
             svr.revert_to_defaults(delqueues=True, delhooks=True)
             local = svr.pbs_conf['PBS_HOME']
@@ -10284,7 +10284,7 @@ class Server(PBSService):
             for a in ['pbs_license_info', 'mail_from', 'acl_hosts']:
                 try:
                     svr.manager(MGR_CMD_UNSET, SERVER, a, sudo=True)
-                except:
+                except BaseException:
                     pass
 
             for (d, l) in _fcopy:
@@ -10318,7 +10318,7 @@ class Server(PBSService):
                 if vdef:
                     try:
                         svr.manager(MGR_CMD_DELETE, NODE, None, "")
-                    except:
+                    except BaseException:
                         pass
                     MoM(h, pbsconf_file=conf_file).insert_vnode_def(vdef)
                     svr.restart()
@@ -10620,7 +10620,7 @@ class Scheduler(PBSService):
     fs_re = '(?P<name>[\S]+)[\s]*:[\s]*Grp:[\s]*(?P<Grp>[-]*[0-9]*)' + \
             '[\s]*cgrp:[\s]*(?P<cgrp>[-]*[0-9]*)[\s]*' + \
             'Shares:[\s]*(?P<Shares>[-]*[0-9]*)[\s]*Usage:[\s]*' + \
-            '(?P<Usage>[0-9]+)[\s]*Perc:[\s]*(?P<Perc>.*)%'
+            r'(?P<Usage>[0-9]+)[\s]*Perc:[\s]*(?P<Perc>.*)%'
     fs_tag = re.compile(fs_re)
 
     def __init__(self, hostname=None, server=None, pbsconf_file=None,
@@ -10940,7 +10940,7 @@ class Scheduler(PBSService):
             conf_opts = self.du.cat(self.hostname, schd_cnfg,
                                     sudo=(not self.has_snap),
                                     level=logging.DEBUG2)['out']
-        except:
+        except BaseException:
             self.logger.error('error parsing scheduler configuration')
             return False
 
@@ -11090,7 +11090,7 @@ class Scheduler(PBSService):
             os.remove(fn)
 
             self.logger.debug(self.logprefix + "updated configuration")
-        except:
+        except BaseException:
             m = self.logprefix + 'error in apply_config '
             self.logger.error(m + str(traceback.print_exc()))
             raise PbsSchedConfigError(rc=1, rv=False, msg=m)
@@ -11323,7 +11323,7 @@ class Scheduler(PBSService):
         try:
             with open(outfile, mode) as f:
                 cPickle.dump(sconf, f)
-        except:
+        except BaseException:
             self.logger.error('error saving configuration ' + outfile)
             return False
 
@@ -12023,7 +12023,7 @@ class Scheduler(PBSService):
                     (dtime_from, dtime_to) = self.utils.convert_dedtime(line)
                     self.dedicated_time.append({'from': dtime_from,
                                                 'to': dtime_to})
-        except:
+        except BaseException:
             self.logger.error('error in parse_dedicated_time')
             return None
 
@@ -12103,7 +12103,7 @@ class Scheduler(PBSService):
             self.du.run_copy(self.hostname, fn, ddfile, sudo=True,
                              preserve_permission=False)
             os.remove(fn)
-        except:
+        except BaseException:
             raise PbsSchedConfigError(rc=1, rv=False,
                                       msg='error adding dedicated time')
 
@@ -12173,7 +12173,7 @@ class Scheduler(PBSService):
         """
         try:
             from ptl.utils.pbs_logutils import PBSSchedulerLog
-        except:
+        except BaseException:
             self.logger.error('error loading ptl.utils.pbs_logutils')
             return None
 
@@ -13053,7 +13053,7 @@ class MoM(PBSService):
         try:
             with open(outfile, mode) as f:
                 cPickle.dump(mconf, f)
-        except:
+        except BaseException:
             self.logger.error('error saving configuration to ' + outfile)
             return False
 
@@ -13227,7 +13227,7 @@ class MoM(PBSService):
                         self.config[k] = [self.config[k], v]
                 else:
                     self.config[k] = v
-        except:
+        except BaseException:
             self.logger.error('error in parse_config')
             return None
 
@@ -13316,7 +13316,7 @@ class MoM(PBSService):
             self.du.run_copy(self.hostname, fn, dest,
                              preserve_permission=False, sudo=True)
             os.remove(fn)
-        except:
+        except BaseException:
             raise PbsMomConfigError(rc=1, rv=False,
                                     msg='error processing add_config')
         if restart:
@@ -13357,7 +13357,7 @@ class MoM(PBSService):
         """
         try:
             fn = self.du.create_temp_file(self.hostname, body=vdef)
-        except:
+        except BaseException:
             raise PbsMomConfigError(rc=1, rv=False,
                                     msg="Failed to insert vnode definition")
         if fname is None:
@@ -13822,7 +13822,7 @@ class Job(ResourceResv):
         else:
             try:
                 homedir = pwd.getpwnam(user)[5]
-            except:
+            except BaseException:
                 homedir = ""
 
         self.username = user
@@ -14073,7 +14073,7 @@ class InteractiveJob(threading.Thread):
         """
         try:
             import pexpect
-        except:
+        except BaseException:
             self.logger.error('pexpect module is required for '
                               'interactive jobs')
             return None
@@ -14108,7 +14108,7 @@ class InteractiveJob(threading.Thread):
             self.job.interactive_handle = _p
             time.sleep(_st)
             expstr = "qsub: waiting for job "
-            expstr += "(?P<jobid>\d+.[0-9A-Za-z-.]+) to start"
+            expstr += r"(?P<jobid>\d+.[0-9A-Za-z-.]+) to start"
             _p.expect(expstr)
             if _p.match:
                 self.jobid = _p.match.group('jobid').decode()

@@ -185,7 +185,7 @@ class PostgreSQLDb(DBType):
             raise PTLDbError(rc=1, rv=False, msg=_msg)
         try:
             import psycopg2
-        except:
+        except BaseException:
             _msg = 'psycopg2 require for %s type database!' % (self.dbtype)
             raise PTLDbError(rc=1, rv=False, msg=_msg)
         try:
@@ -241,7 +241,7 @@ class PostgreSQLDb(DBType):
             stmt = ['CREATE TABLE %s (' % (_DBVER_TN)]
             stmt += ['version TEXT);']
             c.execute(''.join(stmt))
-        except:
+        except BaseException:
             stmt = 'SELECT version from %s;' % (_DBVER_TN)
             version = c.execute(stmt).fetchone()[0]
             self.__upgrade_db(version)
@@ -583,10 +583,10 @@ class SQLiteDb(DBType):
             raise PTLDbError(rc=1, rv=False, msg=_msg)
         try:
             import sqlite3 as db
-        except:
+        except BaseException:
             try:
                 from pysqlite2 import dbapi2 as db
-            except:
+            except BaseException:
                 _msg = 'Either sqlite3 or pysqlite2 module require'
                 _msg += ' for %s type database!' % (self.dbtype)
                 raise PTLDbError(rc=1, rv=False, msg=_msg)
@@ -640,7 +640,7 @@ class SQLiteDb(DBType):
             stmt = ['CREATE TABLE %s (' % (_DBVER_TN)]
             stmt += ['version TEXT);']
             c.execute(''.join(stmt))
-        except:
+        except BaseException:
             stmt = 'SELECT version from %s;' % (_DBVER_TN)
             version = c.execute(stmt).fetchone()[0]
             self.__upgrade_db(version)
@@ -1565,7 +1565,8 @@ class HTMLDb(DBType):
         d['status_data'] = data['status_data']
         d['duration'] = str(data['duration'])
         self.__dbobj[_TESTRESULT_TN].seek(0, os.SEEK_END)
-        self.__dbobj[_TESTRESULT_TN].seek(self.__dbobj[_TESTRESULT_TN].tell() -27, os.SEEK_SET)
+        self.__dbobj[_TESTRESULT_TN].seek(
+            self.__dbobj[_TESTRESULT_TN].tell() - 27, os.SEEK_SET)
         t = self.__dbobj[_TESTRESULT_TN].readline().strip()
         line = ''
         if t != '[':
@@ -1574,7 +1575,8 @@ class HTMLDb(DBType):
             line += '\n'
         line += str(d) + '\n];</script></body></html>'
         self.__dbobj[_TESTRESULT_TN].seek(0, os.SEEK_END)
-        self.__dbobj[_TESTRESULT_TN].seek(self.__dbobj[_TESTRESULT_TN].tell() -26, os.SEEK_SET)
+        self.__dbobj[_TESTRESULT_TN].seek(
+            self.__dbobj[_TESTRESULT_TN].tell() - 26, os.SEEK_SET)
         self.__dbobj[_TESTRESULT_TN].write(line)
         self.__dbobj[_TESTRESULT_TN].flush()
         self.__index += 1

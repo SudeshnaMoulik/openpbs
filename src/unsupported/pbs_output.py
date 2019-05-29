@@ -1,5 +1,5 @@
 # coding: utf-8
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 /*
 # Copyright (C) 1994-2019 Altair Engineering, Inc.

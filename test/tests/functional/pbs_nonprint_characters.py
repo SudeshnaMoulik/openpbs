@@ -107,7 +107,6 @@ exit 0
         self.qmgr = os.path.join(self.pbs_exec, 'bin', 'qmgr')
         self.pbsnodes = os.path.join(self.pbs_exec, 'bin', 'pbsnodes')
 
-
     def create_and_submit_job(self, user=None, attribs=None, content=None,
                               content_interactive=None, preserve_env=False):
         """
@@ -163,9 +162,9 @@ exit 0
             job_outfile = qstat[0][ATTR_o].split(':')[1]
 
             # variable to check if with escaped nonprinting character or not
-            chk_var = 'var1=A\,B\,%s\,C\,D' % self.npcat[ch]
+            chk_var = r'var1=A\,B\,%s\,C\,D' % self.npcat[ch]
             if ch in self.npch_asis:
-                chk_var = 'var1=A\,B\,%s\,C\,D' % ch
+                chk_var = r'var1=A\,B\,%s\,C\,D' % ch
 
             # Check if Variable_List contains the escaped character
             self.server.expect(
@@ -196,9 +195,9 @@ exit 0
             job_outfile = qstat[0][ATTR_o].split(':')[1]
 
             # variable to check if with escaped nonprinting character or not
-            chk_var = 'var1=A\,B\,%s\,C\,D' % self.npcat[ch]
+            chk_var = r'var1=A\,B\,%s\,C\,D' % self.npcat[ch]
             if ch in self.npch_asis:
-                chk_var = 'var1=A\,B\,%s\,C\,D' % ch
+                chk_var = r'var1=A\,B\,%s\,C\,D' % ch
 
             # Check if Variable_List contains the escaped character
             self.server.expect(
@@ -742,9 +741,9 @@ exit 0
                 content_interactive=interactive_script,
                 preserve_env=True)
             # variable to check if with escaped nonprinting character or not
-            chk_var = 'NONPRINT_VAR=X\,%s\,Y' % self.npcat[ch]
+            chk_var = r'NONPRINT_VAR=X\,%s\,Y' % self.npcat[ch]
             if ch in self.npch_asis:
-                chk_var = 'NONPRINT_VAR=X\,%s\,Y' % ch
+                chk_var = r'NONPRINT_VAR=X\,%s\,Y' % ch
             # Check if Variable_List contains the escaped character
             self.server.expect(
                 JOB, {'Variable_List': (MATCH, '%s' % chk_var)}, id=jid)
@@ -786,7 +785,7 @@ exit 0
             content_interactive=interactive_script,
             preserve_env=True)
         # variable to check if with escaped nonprinting character
-        chk_var = 'NONPRINT_VAR=X\,%s\,%s\,Y' % (self.bold_esc, self.red_esc)
+        chk_var = r'NONPRINT_VAR=X\,%s\,%s\,Y' % (self.bold_esc, self.red_esc)
         self.server.expect(
             JOB, {'Variable_List': (MATCH, '%s' % chk_var)}, id=jid)
         # Once all commands sent and matched, job exits
@@ -860,7 +859,7 @@ e.env["LAUNCH_NONPRINT"] = "CD"
         qstat = self.server.status(JOB, ATTR_o, id=jid)
         job_outfile = qstat[0][ATTR_o].split(':')[1]
         # variable to check if with escaped nonprinting character
-        chk_var = 'NONPRINT_VAR=X\,%s\,%s\,Y' % (self.bold_esc, self.red_esc)
+        chk_var = r'NONPRINT_VAR=X\,%s\,%s\,Y' % (self.bold_esc, self.red_esc)
         self.server.expect(
             JOB, {'Variable_List': (MATCH, '%s' % chk_var)}, id=jid)
         # Check for the non-printable character in the job output file

@@ -2711,7 +2711,8 @@ class BatchUtils(object):
         r = ''.join([prefix] + r)
         if hasattr(cls, '__uniq_rstr'):
             while r in cls.__uniq_rstr:
-                r = [random.choice(string.ascii_letters) for _ in range(length)]
+                r = [random.choice(string.ascii_letters)
+                     for _ in range(length)]
                 r = ''.join([prefix] + r)
             cls.__uniq_rstr.append(r)
         else:
@@ -3371,7 +3372,8 @@ class PBSObject(object):
             a = OrderedDict(a)
 
         self.attributes = OrderedDict(list(self.dflt_attributes.items()) +
-                                      list(self.attributes.items()) + list(a.items()))
+                                      list(self.attributes.items()) +
+                                      list(a.items()))
 
         self.custom_attrs = OrderedDict(list(self.custom_attrs.items()) +
                                         list(a.items()))
@@ -13798,7 +13800,8 @@ class Job(ResourceResv):
             a = OrderedDict(a)
 
         self.attributes = OrderedDict(list(self.dflt_attributes.items()) +
-                                      list(self.attributes.items()) + list(a.items()))
+                                      list(self.attributes.items()) +
+                                      list(a.items()))
 
         if self.platform == 'cray' or self.platform == 'craysim':
             s = 'Resource_List.select' in a

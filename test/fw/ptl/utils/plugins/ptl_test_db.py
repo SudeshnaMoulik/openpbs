@@ -1910,7 +1910,7 @@ class PTLTestDb(Plugin):
             print("\n".join(m))
             return
 
-        #sorted_info = sorted(info.items())
+        # sorted_info = sorted(info.items())
         for (k, v) in sorted_info:
             if summary and k != 'summary':
                 continue

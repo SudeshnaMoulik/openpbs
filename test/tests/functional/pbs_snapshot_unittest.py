@@ -798,7 +798,6 @@ pbs.logmsg(pbs.EVENT_DEBUG,"%s")
         except KeyError:
             self.fail("mom_priv/config not found in %s's snapshot" % host2)
 
-    
     def test_snapshot_obf_stress(self):
         """
         A stress test to make sure that snapshot --obufscate really obfuscates
@@ -895,7 +894,7 @@ pbs.logmsg(pbs.EVENT_DEBUG,"%s")
                               " was not obfuscated. Real values:\n" +
                               str(real_values))
                 # Also make sure that no filenames contain the sensitive val
-                cmd = ["find", snap_dir, "-name",  "\'*" + str(val) + "*\'"]
+                cmd = ["find", snap_dir, "-name", "\'*" + str(val) + "*\'"]
                 ret = self.du.run_cmd(cmd=cmd, level=logging.DEBUG)
                 self.assertEquals(ret["rc"], 0, "find command failed!")
                 self.assertIn(ret["out"], ["", None, []], str(val) +

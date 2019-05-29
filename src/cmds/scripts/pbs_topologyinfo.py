@@ -139,7 +139,6 @@ class Inventory(object):
                             p.StartElementHandler = socketXMLstart
                             p.ParseFile(topo_file)
                         except ExpatError as e:
-<<<<<<< HEAD
                             print("%s:  parsing error at line %d, column %d"
                                   % (name, e.lineno, e.offset))
                     else:
@@ -152,30 +151,12 @@ class Inventory(object):
                         print("%-*s%d" % (maxwidth + 1, name,
                               inventory.nnodes))
 
-=======
-                            print("%s:  parsing error at line %d, column %d" \
-                                % (name, e.lineno, e.offset))
-
-                    if options.sockets:
-                        print("%-*s%d" % (maxwidth + 1, name,
-                                          socketXMLstart.nsockets))
-                    else:
-                        total = socketXMLstart.nsockets + \
-                            socketXMLstart.ngpus + socketXMLstart.ncoproc
-                        print("%-*s%d" % (maxwidth + 1, name,
-                                          int(math.ceil(total / 4.0))))
->>>>>>> Py3 support in PBS - try1
             except IOError as err:
                 (e, strerror) = err.args
                 if e == errno.ENOENT:
                     if not compute_socket_nodelist:
-<<<<<<< HEAD
                         print("no socket information available for node %s"
                               % name)
-=======
-                        print("no socket information available for node %s" \
-                            % name)
->>>>>>> Py3 support in PBS - try1
                     continue
                 else:
                     print("%s:  %s (%s)" % (pathname, strerror, e))
@@ -197,7 +178,6 @@ class Inventory(object):
         craysocketpattern = r'<\s*Socket\s+ordinal='
         craygpupattern = r'<\s*Accelerator\s+.*type="GPU"'
         hwloclatestpattern = r'<\s*info\s+name="hwlocVersion"\s+'
-<<<<<<< HEAD
 
         for line in topo_file:
             if re.search(craypattern, line):
@@ -273,76 +253,6 @@ def socketXMLstart(name, attrs):
                 attrs.get("name").startswith("mic")):
             inventory.ndevices += 1
 
-=======
-        if files is None:
-            compute_socket_nodelist = True
-            try:
-                files = os.listdir(dirs)
-            except (IOError, OSError) as err:
-                (e, strerror) = err.args
-                print("%s:  %s (%s)" % (dirs, strerror, e))
-                return
-        else:
-            compute_socket_nodelist = False
-        try:
-            maxwidth = max(list(map(len, files)))
-        except Exception as e:
-            print('max/map failed: %s' % e)
-            return
-        for name in files:
-            pathname = os.sep.join((dirs, name))
-            try:
-                with open(pathname, "r") as f:
-                    (nsockets, ngpus, ncoproc, CrayVersion, hwloclatest) = \
-                        (0, 0, 0, "0.0", 0)
-                    if platform.system() == "Windows":
-                        (nsockets, ngpus, ncoproc) = reportsockets_win(f)
-                    else:
-                        for line in f:
-                            if hwloclatest == 1:
-                                nsockets += 1 if re.search(packagepattern,
-                                                           line) else 0
-                            else:
-                                nsockets += 1 if re.search(socketpattern,
-                                                           line) else 0
-                            ngpus += 1 if re.search(gpupattern, line) else 0
-                            ncoproc += 1 if re.search(micpattern, line) else 0
-                            if re.search(craypattern, line):
-                                start_index = line.find('protocol="') + \
-                                    len('protocol="')
-                                CrayVersion = line[start_index:
-                                                   line.find('"', start_index)]
-                                continue
-                            if re.search(hwloclatestpattern, line):
-                                hwlocVer = line[line.find('value="') +
-                                                len('value="'):
-                                                line.rfind('"/>')]
-                                hwloclatest = latest_hwloc(hwlocVer)
-                            if CrayVersion != "0.0":
-                                if float(CrayVersion) <= 1.2 and re.search(
-                                        craynodepattern, line):
-                                    nsockets += 2
-                                elif re.search(craysocketpattern, line):
-                                    nsockets += 1
-                                if re.search(craygpupattern, line):
-                                    ngpus += 1
-                    if options.sockets:
-                        print("%-*s%d" % (maxwidth + 1, name, nsockets))
-                    else:
-                        total = nsockets + ngpus + ncoproc
-                        print("%-*s%d" % (maxwidth + 1, name,
-                                          int(math.ceil(total / 4.0))))
-            except IOError as err:
-                (e, strerror) = err.args
-                if e == errno.ENOENT:
-                    if not compute_socket_nodelist:
-                        print("no socket information available for node %s" \
-                            % name)
-                    continue
-                else:
-                    print("%s:  %s (%s)" % (pathname, strerror, e))
-                    raise
->>>>>>> Py3 support in PBS - try1
 
 if __name__ == "__main__":
     usagestr = "usage:  %prog [ -a -s ]\n\t%prog -s node1 [ node2 ... ]"

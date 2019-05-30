@@ -322,14 +322,11 @@ class PBSServiceInstanceWrapper(dict):
     def host_keys(self):
         return [h.split('@')[0] for h in list(self.keys())]
 
-    def keys(self):
-        return self.orderedlist
-
-    def itervalues(self):
-        return (self[key] for key in self.orderedlist)
+    '''def keys(self):
+        return self.orderedlist'''
 
     def values(self):
-        return [self[key] for key in self.orderedlist]
+        return (self[key] for key in self.orderedlist)
 
 
 class setUpClassError(Exception):

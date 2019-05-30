@@ -123,7 +123,7 @@ from ptl.lib.pbs_testlib import BatchUtils
     CORE_SERVER,
     CORE_MOM,
     # Miscellaneous
-    CTIME) = list(range(57))
+    CTIME) = list(range(59))
 
 
 # Define paths to various files/directories with respect to the snapshot

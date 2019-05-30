@@ -27,7 +27,7 @@ before_install:
     - export DOCKER_EXEC="docker exec -it ${DOCKER_EXTRA_ARG} --privileged testdev"
 install:
     - ./.travis/${OS_TYPE_FILE}.sh
-    - docker exec -it -w $(pwd)/test/fw testdev pip install -r requirements.txt .
+    - docker exec -it -w $(pwd)/test/fw testdev pip3 install -r requirements.txt .
     - docker exec -it testdev pbs_config --make-ug
     - docker exec -it -w $(pwd)/test/tests testdev pbs_benchpress --tags=smoke
 script: true

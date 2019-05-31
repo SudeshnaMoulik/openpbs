@@ -219,7 +219,7 @@ class DshUtils(object):
             if pyexec is None:
                 pyexec = self.which(hostname, 'python', level=logging.DEBUG2)
             _cmdstr = '"import platform;'
-            _cmdstr += 'print \' \'.join(platform.uname())"'
+            _cmdstr += 'print(\' \'.join(platform.uname()))"'
             cmd = [pyexec, '-c', _cmdstr]
             ret = self.run_cmd(hostname, cmd=cmd)
             if ret['rc'] != 0 or len(ret['out']) == 0:
@@ -255,7 +255,7 @@ class DshUtils(object):
             pyexec = self.which(hostname, 'python', level=logging.DEBUG2)
 
         cmd = [pyexec, '-c',
-               '"import platform; print platform.platform()"']
+               '"import platform; print(platform.platform())"']
         ret = self.run_cmd(hostname, cmd=cmd)
         if ret['rc'] != 0 or len(ret['out']) == 0:
             self.logger.warning("Unable to retrieve OS info, defaulting "

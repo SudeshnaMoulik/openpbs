@@ -1388,7 +1388,7 @@ class SmokeTest(PBSTestSuite):
         self.assertTrue(rv)
         # Set scheduler fairshare usage formula
         self.setup_fs(
-            'math.ceil(math.fabs(-ncpus*(foo1/100.00)*math.sqrt(100)))')
+            'ceil(fabs(-ncpus*(foo1/100.00)*sqrt(100)))')
         node_attr = {'resources_available.ncpus': 1,
                      'resources_available.foo1': 5000}
         self.server.manager(MGR_CMD_SET, NODE, node_attr, self.mom.shortname)

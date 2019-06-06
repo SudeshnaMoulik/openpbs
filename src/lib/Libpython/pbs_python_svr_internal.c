@@ -7547,8 +7547,8 @@ pbsv1mod_meth_is_attrib_val_settable(PyObject *self, PyObject *args, PyObject *k
 			"Not permitted to modify attributes (name=%s,res=%s): an event.accept() or event.reject() already called.", name, resource);
 		log_buffer[LOG_BUF_SIZE-1] = '\0';
 		PyErr_SetString(PyExc_AssertionError, log_buffer);
-		rc = 1; /* return False */
-		goto IAVS_OK_EXIT;
+		/* throw an exception */
+                goto IAVS_ERROR_EXIT;
 	}
 
 	if (readonly) {

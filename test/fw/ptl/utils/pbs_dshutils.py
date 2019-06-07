@@ -185,8 +185,8 @@ class DshUtils(object):
             found_already = True
         if not self.is_localhost(hostname) and not found_already:
             if pyexec is None:
-                pyexec = self.which(hostname, 'python', level=logging.DEBUG2)
-            cmd = [pyexec, '-c', '"import sys; print sys.platform"']
+                pyexec = self.which(hostname, 'python3', level=logging.DEBUG2)
+            cmd = [pyexec, '-c', '"import sys; print(sys.platform)"']
             ret = self.run_cmd(hostname, cmd=cmd)
             if ret['rc'] != 0 or len(ret['out']) == 0:
                 _msg = 'Unable to retrieve platform info,'
@@ -217,7 +217,7 @@ class DshUtils(object):
             return self._h2pu[hostname]
         if not self.is_localhost(hostname):
             if pyexec is None:
-                pyexec = self.which(hostname, 'python', level=logging.DEBUG2)
+                pyexec = self.which(hostname, 'python3', level=logging.DEBUG2)
             _cmdstr = '"import platform;'
             _cmdstr += 'print(\' \'.join(platform.uname()))"'
             cmd = [pyexec, '-c', _cmdstr]
@@ -252,7 +252,7 @@ class DshUtils(object):
             return self._h2osinfo[hostname]
 
         if pyexec is None:
-            pyexec = self.which(hostname, 'python', level=logging.DEBUG2)
+            pyexec = self.which(hostname, 'python3', level=logging.DEBUG2)
 
         cmd = [pyexec, '-c',
                '"import platform; print(platform.platform())"']
@@ -369,9 +369,9 @@ class DshUtils(object):
             if 'PBS_CONF_FILE' in os.environ:
                 dflt_conf = os.environ['PBS_CONF_FILE']
         else:
-            pc = ('"import os;print [False, os.environ[\'PBS_CONF_FILE\']]'
-                  '[\'PBS_CONF_FILE\' in os.environ]"')
-            cmd = ['python', '-c', pc]
+            pc = ('"import os;print([False, os.environ[\'PBS_CONF_FILE\']]'
+                  '[\'PBS_CONF_FILE\' in os.environ])"')
+            cmd = ['python3', '-c', pc]
             ret = self.run_cmd(hostname, cmd, logerr=False)
             if ((ret['rc'] != 0) and (len(ret['out']) > 0) and
                     (ret['out'][0] != 'False')):
@@ -827,8 +827,8 @@ class DshUtils(object):
         if self.is_localhost(hostname):
             self._tempdir[hostname] = tempfile.gettempdir()
         else:
-            cmd = ['python', '-c',
-                   '"import tempfile;print tempfile.gettempdir()"']
+            cmd = ['python3', '-c',
+                   '"import tempfile; print(tempfile.gettempdir())"']
             ret = self.run_cmd(hostname, cmd, level=logging.DEBUG)
             if ret['rc'] == 0:
                 self._tempdir[hostname] = ret['out'][0].strip()
@@ -1085,9 +1085,9 @@ class DshUtils(object):
                 # to avoid a file copy as root, we copy it as current user
                 # and move it remotely to the desired path/name.
                 # First, get a remote temporary filename
-                cmd = ['python', '-c',
-                       '"import tempfile;print ' +
-                       'tempfile.mkstemp(\'PtlPbstmpcopy\')[1]"']
+                cmd = ['python3', '-c',
+                       '"import tempfile;print(' +
+                       'tempfile.mkstemp(\'PtlPbstmpcopy\')[1])"']
                 # save original destination
                 sudo_save_dest = dest
                 # Make the target of the copy the temporary file
@@ -1350,11 +1350,11 @@ class DshUtils(object):
         if (self.is_localhost(hostname) and (not sudo) and (runas is None)):
             return os.path.getmtime(path)
         else:
-            py_cmd = 'import os; print os.path.getmtime(\'%s\')' % (path)
+            py_cmd = 'import os; print(os.path.getmtime(\'%s\'))' % (path)
             if not self.is_localhost(hostname):
                 py_cmd = '\"' + py_cmd + '\"'
 
-            cmd = [self.which(hostname, 'python', level=level), '-c', py_cmd]
+            cmd = [self.which(hostname, 'python3', level=level), '-c', py_cmd]
             ret = self.run_cmd(hostname, cmd=cmd, sudo=sudo, runas=runas,
                                logerr=False, level=level)
             if ((ret['rc'] == 0) and (len(ret['out']) == 1) and
@@ -1957,8 +1957,8 @@ class DshUtils(object):
                 tmp_args += ['dir=\'' + str(dir) + '\'']
             args = ",".join(tmp_args)
             ret = self.run_cmd(hostname,
-                               ['python', '-c', '"import tempfile; ' +
-                                'print tempfile.mkdtemp(' + args + ')"'],
+                               ['python3', '-c', '"import tempfile; ' +
+                                'print(tempfile.mkdtemp(' + args + '))"'],
                                level=level)
             if ret['rc'] == 0 and ret['out']:
                 fn = ret['out'][0]

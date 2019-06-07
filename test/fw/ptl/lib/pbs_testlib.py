@@ -7907,8 +7907,8 @@ class Server(PBSService):
                 self.du.run_copy(self.hostname, fn, fn)
 
         if not self._is_local:
-            p_env = '"import os; print os.environ[\'PTL_EXEC\']"'
-            ret = self.du.run_cmd(self.hostname, ['python', '-c', p_env],
+            p_env = '"import os; print(os.environ[\'PTL_EXEC\'])"'
+            ret = self.du.run_cmd(self.hostname, ['python3', '-c', p_env],
                                   logerr=False)
             if ret['out']:
                 runcmd = [os.path.join(ret['out'][0], 'pbs_as')]

@@ -1,20 +1,12 @@
 #!/bin/bash -xe
-BUILDPKGS='build-essential dpkg-dev autoconf libtool rpm alien libssl-dev libxt-dev libpq-dev libexpat1-dev libedit-dev libncurses5-dev libical-dev libhwloc-dev pkg-config tcl-dev tk-dev swig'
+BUILDPKGS='build-essential dpkg-dev autoconf libtool rpm alien libssl-dev libxt-dev libpq-dev libexpat1-dev libedit-dev libncurses5-dev libical-dev libhwloc-dev pkg-config tcl-dev python3-dev tk-dev swig'
 DEPPKGS='expat postgresql postgresql-contrib'
-TESTPKGS='sudo man-db wget'
+TESTPKGS='python3-pip sudo man-db wget'
 if [ "x${DEBIAN_FRONTEND}x" == "xx" ]; then
   export DEBIAN_FRONTEND=noninteractive
 fi
 ${DOCKER_EXEC} apt-get -qq update
 ${DOCKER_EXEC} apt-get install -y ${BUILDPKGS} ${DEPPKGS} ${TESTPKGS}
-${DOCKER_EXEC} wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tgz
-${DOCKER_EXEC} tar -xf Python-3.6.5.tgz
-${DOCKER_EXEC} cd Python-3.6.5/
-${DOCKER_EXEC} ./configure --enable-optimizations --with-ensurepip=install
-${DOCKER_EXEC} make altinstall
-${DOCKER_EXEC} /bin/bash -c 'ln -s /usr/local/bin/python3.6 /usr/bin/python3'
-${DOCKER_EXEC} export PATH=$PATH:/usr/local/bin
-${DOCKER_EXEC} cd ../
 ${DOCKER_EXEC} ./autogen.sh
 ${DOCKER_EXEC} ./configure
 ${DOCKER_EXEC} make dist

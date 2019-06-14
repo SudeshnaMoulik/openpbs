@@ -76,7 +76,7 @@ class TestPbsRstat(TestFunctional):
                               logerr=False)
 
         self.assertEqual(ret['rc'], 0,
-                          'pbs_rstat returned with non-zero exit status')
+                         'pbs_rstat returned with non-zero exit status')
 
         rstat_out = '\n'.join(ret['out'])
         self.assertIn(rid2, rstat_out)

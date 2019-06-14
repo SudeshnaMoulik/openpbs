@@ -374,4 +374,4 @@ class TestFairshare(TestFunctional):
         fs = self.scheduler.query_fairshare(name=str(TEST_USER))
         fs_usage = int(fs.usage)
         self.assertEqual(fs_usage, 1,
-                          "Fairshare usage %d not equal to 1" % fs_usage)
+                         "Fairshare usage %d not equal to 1" % fs_usage)

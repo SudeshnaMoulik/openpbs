@@ -184,7 +184,7 @@ class TestPbsnodes(TestFunctional):
         now = self.server.status(NODE, 'last_used_time')[0]['last_used_time']
         self.logger.info("Before: " + prev + ". After: " + now + ".")
         self.assertEqual(prev.strip(), now.strip(),
-                          'Last used time mismatch after server restart')
+                         'Last used time mismatch after server restart')
 
     @skipOnCpuSet
     @skipOnCray

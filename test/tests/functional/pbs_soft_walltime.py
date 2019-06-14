@@ -112,7 +112,7 @@ class TestSoftWalltime(TestFunctional):
         est, wt = self.stat_job(baseline_job)
         for j in jobs:
             est2, wt2 = self.stat_job(j)
-            self.assertEquals(est + wt, est2)
+            self.assertEqual(est + wt, est2)
             est = est2
             wt = wt2
 
@@ -156,7 +156,7 @@ class TestSoftWalltime(TestFunctional):
         except PbsSubmitError as e:
             self.assertTrue(msg in e.msg[0])
 
-        self.assertEquals(jid, None)
+        self.assertEqual(jid, None)
 
         J = Job(TEST_USER)
         jid = self.server.submit(J)

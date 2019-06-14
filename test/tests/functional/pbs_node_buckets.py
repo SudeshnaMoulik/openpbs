@@ -561,8 +561,8 @@ class TestNodeBuckets(TestFunctional):
 
         c1 = n1[0]['resources_available.color']
         c2 = n2[0]['resources_available.color']
-        self.assertEquals(c1, 'yellow', "Job didn't run on yellow nodes")
-        self.assertEquals(c2, 'yellow', "Job didn't run on yellow nodes")
+        self.assertEqual(c1, 'yellow', "Job didn't run on yellow nodes")
+        self.assertEqual(c2, 'yellow', "Job didn't run on yellow nodes")
 
     @timeout(450)
     def test_psets(self):
@@ -821,8 +821,8 @@ class TestNodeBuckets(TestFunctional):
         n2 = j1.get_vnodes(s2[0]['exec_vnode'])
 
         msg = 'job did not run on correct number of nodes'
-        self.assertEquals(len(n1), 715, msg)
-        self.assertEquals(len(n2), 715, msg)
+        self.assertEqual(len(n1), 715, msg)
+        self.assertEqual(len(n2), 715, msg)
 
         for node in n1:
             self.assertTrue(node not in n2, 'Jobs share nodes: ' + node)

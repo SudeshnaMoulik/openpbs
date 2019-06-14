@@ -75,7 +75,7 @@ class TestPbsRstat(TestFunctional):
         ret = self.du.run_cmd(self.server.hostname, cmd=rstat_opt,
                               logerr=False)
 
-        self.assertEquals(ret['rc'], 0,
+        self.assertEqual(ret['rc'], 0,
                           'pbs_rstat returned with non-zero exit status')
 
         rstat_out = '\n'.join(ret['out'])

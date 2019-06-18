@@ -44,7 +44,7 @@ AC_DEFUN([PBS_AC_WITH_PYTHON],
     )
   )
   AS_IF([test "x$with_python" != "x"],
-    [PYTHON="$with_python/bin/python"]
+    [PYTHON="$with_python/bin/python3"]
   )
   AM_PATH_PYTHON([3.5])
   AS_IF([test "$PYTHON_VERSION" != "3.5" -a "$PYTHON_VERSION" != "3.6" -a "$PYTHON_VERSION" != "3.7"],

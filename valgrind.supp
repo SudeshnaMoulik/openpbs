@@ -14589,3 +14589,106 @@
    fun:wait_request
    fun:main
 }
+{
+   Python leak
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   ...
+   fun:PyMem_Malloc
+   ...
+}
+{
+   Python leak
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:calloc
+   ...
+   fun:PyMem_Calloc
+   ...
+}
+{
+   Python leak
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   ...
+   fun:PyObject_Malloc
+   ...
+}
+{
+   Python leak
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   ...
+   fun:PyMem_Realloc
+   ...
+}
+{
+   Python leak
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:realloc
+   fun:_PyMem_RawRealloc
+   fun:_PyMem_DebugRawRealloc
+   fun:_PyMem_DebugRealloc
+   fun:PyMem_Realloc
+   fun:list_resize 
+   ...
+}
+{
+   Python leak
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:realloc
+   fun:_PyMem_RawRealloc
+   fun:_PyMem_DebugRawRealloc
+   fun:_PyMem_DebugRealloc
+   fun:PyMem_Realloc
+   fun:PyImport_ExtendInittab
+   fun:pbs_python_ext_start_interpreter
+   fun:mgr_resource_create
+   fun:req_manager
+   fun:process_socket
+   fun:wait_request
+   fun:main
+}
+{
+   Python leak
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:realloc
+   ...
+   fun:PyObject_Realloc
+   ...
+}
+{
+   Python leak
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   ...
+   fun:PyMem_RawMalloc
+   ... 
+   fun:_Py_InitializeEx_Private
+   fun:Py_InitializeEx
+   ...
+}
+{
+   Python leak
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   fun:_PyMem_RawMalloc
+   fun:_PyMem_DebugRawAlloc
+   fun:PyMem_DebugRawMalloc
+   fun:PyMem_RawMalloc
+   fun:PyThread_allocate_lock
+   fun:_PyImport_AcquireLock
+   fun:_imp_acquire_lock_impl
+   fun:_imp_acquire_lock
+   fun:_PyCFunction_FastCallDict
+   fun:_PyCFunction_FastCallKeywords
+   fun:call_function
+}

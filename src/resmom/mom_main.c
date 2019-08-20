@@ -8249,7 +8249,6 @@ main(int argc, char *argv[])
 	PyObject 			*retval =  NULL;
 	char				buf[MAXPATHLEN];
 	char				py_version[4];
-	const char 			*py_v;
 #endif
 
 
@@ -9580,8 +9579,7 @@ main(int argc, char *argv[])
 
 #else
 	/* Identify the version of the Python interpreter */
-	py_v = Py_GetVersion();
-	strncpy(py_version, py_v, 3);
+	strncpy(py_version, Py_GetVersion(), 3);
 	py_version[3] = '\0';
 
 	/* list of possible paths to Python modules (mom imports json) */

@@ -79,10 +79,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/SAFESEH /STACK:0x1000000 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>secur32.lib;Userenv.lib;mpr.lib;libcrypto.lib;crypt32.lib;winmm.lib;pdh.lib;ws2_32.lib;netapi32.lib;odbc32.lib;odbccp32.lib;Psapi.lib;python27_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>secur32.lib;Userenv.lib;mpr.lib;libcrypto.lib;crypt32.lib;winmm.lib;pdh.lib;ws2_32.lib;netapi32.lib;odbc32.lib;odbccp32.lib;Psapi.lib;python36_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\..\..\win_build\src\resmom\Debug\pbs_mom.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\win_build\src\server\Debug;..\..\src\server;..\..\..\binaries\openssl_debug\lib;..\..\..\binaries\python_debug\PC\VS9.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\win_build\src\server\Debug;..\..\src\server;..\..\..\binaries\openssl_debug\lib;..\..\..\binaries\python_debug\PCbuild\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>..\..\..\win_build\src\resmom\Debug\pbs_mom.pdb</ProgramDatabaseFile>

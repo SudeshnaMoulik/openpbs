@@ -174,8 +174,8 @@ if not %ERRORLEVEL% == 0 (
 )
 if "%BUILD_TYPE%"=="Debug" (
     REM need to check what happens in debug version
-    1>nul copy /B /Y "%BINARIESDIR%\python_debug\PCbuild\python27_d.dll" "%PBS_EXECDIR%\python\"
-	1>nul copy /B /Y "%BINARIESDIR%\python_debug\PCbuild\python27_d.pdb" "%PBS_EXECDIR%\python\"
+    1>nul copy /B /Y "%BINARIESDIR%\python_debug\PCbuild\win32\python36_d.dll" "%PBS_EXECDIR%\python\"
+	1>nul copy /B /Y "%BINARIESDIR%\python_debug\PCbuild\win32\python36_d.pdb" "%PBS_EXECDIR%\python\"
 )
 
 echo Copying necessory files for PBS_EXEC\python_x64

@@ -8337,6 +8337,7 @@ main(int argc, char *argv[])
 		ss.dwWin32ExitCode = ERROR_OUTOFMEMORY;
 		if (g_ssHandle != 0)
 			SetServiceStatus(g_ssHandle, &ss);
+		printf("Unable to initialize thread context\n");
 #else
 		fprintf(stderr, "%s: Unable to initialize thread context\n",
 			argv[0]);
@@ -9433,6 +9434,9 @@ main(int argc, char *argv[])
 			"Error configuring PBS checkpoint directory",
 			path_checkpoint, "; Giving up after", i, "attempts.");
 		log_err(errno, msg_daemonname, log_buffer);
+		printf("%s %s %s %d %s",
+			"Error configuring PBS checkpoint directory",
+			path_checkpoint, "; Giving up after", i, "attempts.");
 
 #ifdef	WIN32
 		g_dwCurrentState = SERVICE_STOPPED;
@@ -9747,6 +9751,9 @@ main(int argc, char *argv[])
 	(void)sprintf(log_buffer,
 		"Mom pid = %d ready, using ports Server:%d MOM:%d RM:%d",
 		mom_pid, default_server_port, pbs_mom_port, pbs_rm_port);
+	printf("if running. logging that we are up and running.\
+			Mom pid = %d ready, using ports Server:%d MOM:%d RM:%d",
+			mom_pid, default_server_port, pbs_mom_port, pbs_rm_port);
 	log_event(PBSEVENT_SYSTEM | PBSEVENT_FORCE, PBS_EVENTCLASS_SERVER,
 		LOG_NOTICE, msg_daemonname, log_buffer);
 
@@ -9756,6 +9763,7 @@ main(int argc, char *argv[])
 	g_dwCurrentState = SERVICE_RUNNING;
 	ss.dwCurrentState = g_dwCurrentState;
 	if (g_ssHandle != 0) SetServiceStatus(g_ssHandle, &ss);
+	printf("Telling server that we have started.\n");
 #endif	/* WIN32 */
 
 	/*
@@ -10378,6 +10386,7 @@ main(int argc, char *argv[])
 			ErrorMessage("OpenSCManager");
 			return 1;
 		}
+		printf("Inside if(reg/unreg). Value of schManager %s\n", schManager);
 
 		if (reg) {
 			GetModuleFileName(0, szFileName,
@@ -10429,12 +10438,11 @@ main(int argc, char *argv[])
 
 		struct arg_param *pap;
 		int	i, j;
-
 		pap = create_arg_param();
-		if (pap == NULL)
+		if (pap == NULL) {
 			ErrorMessage("create_arg_param");
 			return 1;
-
+		}
 		pap->argc = argc-1;	/* don't pass the second argument */
 		for (i=j=0; i < argc; i++) {
 			if (i == 1)
@@ -10458,7 +10466,7 @@ main(int argc, char *argv[])
 			{ 0 }
 		};
 
-
+		printf("Inside else part (3rd part)\n");
 		if (getenv("PBS_CONF_FILE") == NULL) {
 			char conf_path[80];
 			char conf_env[80];
@@ -10476,7 +10484,7 @@ main(int argc, char *argv[])
 				}
 			}
 		}
-
+		printf("Inside else part: before CreateMutex");
 		hStop = CreateMutex(NULL, TRUE, NULL);
 		if (!StartServiceCtrlDispatcher(ServiceTable)) {
 			log_err(-1, "main", "StartServiceCtrlDispatcher");

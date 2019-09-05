@@ -8292,6 +8292,14 @@ main(int argc, char *argv[])
 			return (1);
 		}
 	}
+#endif
+
+	/* set single threaded mode */
+	pbs_client_thread_set_single_threaded_mode();
+	/* disable attribute verification */
+	set_no_attribute_verification();
+
+#ifdef WIN32
 
 	if (g_ssHandle != 0) SetServiceStatus(g_ssHandle, &ss);
 	/* load the pbs conf file */
@@ -8324,11 +8332,6 @@ main(int argc, char *argv[])
 #endif
 #endif	/* WIN32 */
 
-	/* set single threaded mode */
-	pbs_client_thread_set_single_threaded_mode();
-	/* disable attribute verification */
-	set_no_attribute_verification();
-
 	/* initialize the thread context */
 	if (pbs_client_thread_init_thread_context() != 0) {
 #ifdef WIN32
@@ -8337,7 +8340,6 @@ main(int argc, char *argv[])
 		ss.dwWin32ExitCode = ERROR_OUTOFMEMORY;
 		if (g_ssHandle != 0)
 			SetServiceStatus(g_ssHandle, &ss);
-		printf("Unable to initialize thread context\n");
 #else
 		fprintf(stderr, "%s: Unable to initialize thread context\n",
 			argv[0]);
@@ -9434,9 +9436,6 @@ main(int argc, char *argv[])
 			"Error configuring PBS checkpoint directory",
 			path_checkpoint, "; Giving up after", i, "attempts.");
 		log_err(errno, msg_daemonname, log_buffer);
-		printf("%s %s %s %d %s",
-			"Error configuring PBS checkpoint directory",
-			path_checkpoint, "; Giving up after", i, "attempts.");
 
 #ifdef	WIN32
 		g_dwCurrentState = SERVICE_STOPPED;
@@ -9751,9 +9750,6 @@ main(int argc, char *argv[])
 	(void)sprintf(log_buffer,
 		"Mom pid = %d ready, using ports Server:%d MOM:%d RM:%d",
 		mom_pid, default_server_port, pbs_mom_port, pbs_rm_port);
-	printf("if running. logging that we are up and running.\
-			Mom pid = %d ready, using ports Server:%d MOM:%d RM:%d",
-			mom_pid, default_server_port, pbs_mom_port, pbs_rm_port);
 	log_event(PBSEVENT_SYSTEM | PBSEVENT_FORCE, PBS_EVENTCLASS_SERVER,
 		LOG_NOTICE, msg_daemonname, log_buffer);
 
@@ -9763,7 +9759,6 @@ main(int argc, char *argv[])
 	g_dwCurrentState = SERVICE_RUNNING;
 	ss.dwCurrentState = g_dwCurrentState;
 	if (g_ssHandle != 0) SetServiceStatus(g_ssHandle, &ss);
-	printf("Telling server that we have started.\n");
 #endif	/* WIN32 */
 
 	/*
@@ -10392,7 +10387,6 @@ main(int argc, char *argv[])
 			GetModuleFileName(0, szFileName,
 				sizeof(szFileName)/sizeof(*szFileName));
 
-			printf("Installing service %s\n", g_PbsMomName);
 			schSelf =
 				CreateService(schManager, g_PbsMomName,
 				__TEXT("PBS_MOM"),
@@ -10466,7 +10460,6 @@ main(int argc, char *argv[])
 			{ 0 }
 		};
 
-		printf("Inside else part (3rd part)\n");
 		if (getenv("PBS_CONF_FILE") == NULL) {
 			char conf_path[80];
 			char conf_env[80];
@@ -10484,7 +10477,6 @@ main(int argc, char *argv[])
 				}
 			}
 		}
-		printf("Inside else part: before CreateMutex");
 		hStop = CreateMutex(NULL, TRUE, NULL);
 		if (!StartServiceCtrlDispatcher(ServiceTable)) {
 			log_err(-1, "main", "StartServiceCtrlDispatcher");

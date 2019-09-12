@@ -45,7 +45,7 @@ if not defined CURL_BIN (
     set CURL_BIN=curl
 )
 if not defined UNZIP_BIN (
-    set UNZIP_BIN=unzip
+    set UNZIP_BIN=C:\cygwin64\bin\unzip
 )
 if not defined MSYSDIR (
     set MSYSDIR=C:\MinGW\msys\1.0

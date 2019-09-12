@@ -46,11 +46,13 @@
     <OutDir>..\..\..\win_build\src\tools\Debug\</OutDir>
     <IntDir>..\..\..\win_build\src\tools\Debug\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>pbs-config-add</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\..\win_build\src\tools\Release\</OutDir>
     <IntDir>..\..\..\win_build\src\tools\Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>pbs-config-add</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>

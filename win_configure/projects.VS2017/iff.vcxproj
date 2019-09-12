@@ -46,11 +46,13 @@
     <OutDir>..\..\..\win_build\src\iff\Debug\</OutDir>
     <IntDir>..\..\..\win_build\src\iff\Debug\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>pbs_iff</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\..\win_build\src\iff\Release\</OutDir>
     <IntDir>..\..\..\win_build\src\iff\Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>pbs_iff</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>

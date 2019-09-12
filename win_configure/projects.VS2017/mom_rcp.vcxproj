@@ -46,11 +46,13 @@
     <OutDir>..\..\..\win_build\src\mom_rcp\Debug\</OutDir>
     <IntDir>..\..\..\win_build\src\mom_rcp\Debug\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>pbs_rcp</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\..\win_build\src\mom_rcp\Release\</OutDir>
     <IntDir>..\..\..\win_build\src\mom_rcp\Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>pbs_rcp</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>

@@ -47,11 +47,13 @@
     <OutDir>..\..\..\win_build\src\stage_file_win\Debug\</OutDir>
     <IntDir>..\..\..\win_build\src\stage_file_win\Debug\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>pbs_stage_file</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\..\win_build\src\stage_file_win\Release\</OutDir>
     <IntDir>..\..\..\win_build\src\stage_file_win\Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>pbs_stage_file</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>

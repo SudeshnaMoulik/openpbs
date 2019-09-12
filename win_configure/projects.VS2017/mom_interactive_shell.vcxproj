@@ -47,11 +47,13 @@
     <OutDir>..\..\..\win_build\src\resmom\Debug\</OutDir>
     <IntDir>..\..\..\win_build\src\resmom\Debug\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>mom_shell</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\..\win_build\src\resmom\Release\</OutDir>
     <IntDir>..\..\..\win_build\src\resmom\Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>mom_shell</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>

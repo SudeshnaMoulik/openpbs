@@ -51,6 +51,7 @@
     <OutDir>..\..\..\win_build\src\resmom\Release\</OutDir>
     <IntDir>..\..\..\win_build\src\resmom\Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>mom_open_demux</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>

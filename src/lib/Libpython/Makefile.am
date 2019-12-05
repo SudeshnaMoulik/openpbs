@@ -40,7 +40,8 @@ noinst_LIBRARIES = libpbspython.a libpbspython_svr.a
 
 libpbspython_a_CPPFLAGS = \
 	-I$(top_srcdir)/src/include \
-	@PYTHON_INCLUDES@
+	@PYTHON_INCLUDES@ \
+	@KRB5_CFLAGS@
 
 libpbspython_a_SOURCES = \
 	shared_python_utils.c \
@@ -50,7 +51,8 @@ libpbspython_a_SOURCES = \
 
 libpbspython_svr_a_CPPFLAGS = \
 	-I$(top_srcdir)/src/include \
-	@PYTHON_INCLUDES@
+	@PYTHON_INCLUDES@ \
+	@KRB5_CFLAGS@
 
 libpbspython_svr_a_SOURCES = \
 	shared_python_utils.c \

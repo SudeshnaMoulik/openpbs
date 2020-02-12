@@ -55,7 +55,10 @@
 #include "net_connect.h"
 #include "batch_request.h"
 #include "pbs_share.h"
-
+#include <security/pam_appl.h>
+#include <stdio.h>
+#include "log.h"
+#include <assert.h>
 
 /* External Global Data Items Referenced */
 
@@ -63,6 +66,77 @@ extern time_t time_now;
 
 extern pbs_list_head svr_allconns;
 extern int max_connection;
+
+char user_passwd[256];
+void read_from_user_home(char *username, char *host) {
+	
+	FILE *fp = popen("ssh username@host type 'C:\\Users\\username\\cred.txt'", "r");
+	fgets(user_passwd, 256, fp) ;
+}
+
+int test_conv(int num_msg, const struct pam_message **msg,
+        struct pam_response **resp, void *appdata_ptr) {
+		
+    const struct pam_message* msg_ptr = *msg;
+    struct pam_response * resp_ptr = NULL;
+    int x = 0;
+
+    *resp = calloc(sizeof(struct pam_response), num_msg);
+    for (x = 0; x < num_msg; x++, msg_ptr++){
+        char* resp_str;
+        switch (msg_ptr->msg_style){
+            case PAM_PROMPT_ECHO_OFF:
+            case PAM_PROMPT_ECHO_ON:
+                resp_str = user_passwd;
+                resp[x]->resp= strdup(resp_str);
+                break;
+
+            case PAM_ERROR_MSG:
+            case PAM_TEXT_INFO:
+                printf("PAM: %s\n", msg_ptr->msg);
+                break;
+
+            default:
+                assert(0);
+
+        }
+    }
+    return PAM_SUCCESS;
+}
+
+int validate_from_sssd(struct batch_request *preq) {
+	int status;
+	struct pam_conv conv;
+	pam_handle_t* handle;
+
+	read_from_user_home(preq->rq_user, preq->rq_host) ;
+	conv.conv=test_conv;
+
+	status = pam_start("passwd", preq->rq_user, &conv, &handle ) ;
+	if (status != PAM_SUCCESS) {
+		log_event(PBSEVENT_DEBUG, PBS_EVENTCLASS_SERVER, LOG_INFO,
+				preq->rq_user, "Pam start failed");
+		return 1;
+	}
+	status = pam_authenticate(handle, 0) ;
+	if (status != PAM_SUCCESS) {
+		log_event(PBSEVENT_DEBUG, PBS_EVENTCLASS_SERVER, LOG_INFO,
+				preq->rq_user, ": Pam authentication failed");
+		return 1;
+	}
+	status = pam_acct_mgmt(handle, 0);
+	if (status != PAM_SUCCESS) {
+		log_event(PBSEVENT_DEBUG, PBS_EVENTCLASS_SERVER, LOG_INFO,
+				preq->rq_user, "Pam pam_acct_mgmt failed");
+		return 1;
+	}
+	
+	return 0;
+}
+
+
+
+
 
 /* Global Data Home in this file */
 
@@ -78,6 +152,7 @@ void
 req_connect(struct batch_request *preq)
 {
 	conn_t *conn = get_conn(preq->rq_conn);
+	int validated_user ;
 
 	if (!conn) {
 		req_reject(PBSE_SYSTEM, 0, preq);
@@ -91,6 +166,12 @@ req_connect(struct batch_request *preq)
 			conn->cn_authen |= PBS_NET_CONN_FROM_PRIVIL;
 	}
 
+	validated_user = validate_from_sssd(preq) ;
+	if (validated_user == 0 && (conn->cn_authen &
+		(PBS_NET_CONN_AUTHENTICATED|PBS_NET_CONN_FROM_PRIVIL))==0) 
+		reply_ack(preq); // successfully authenticated with AD
+	else
+		req_reject(PBSE_BADCRED, 0, preq);
 
 	if ((conn->cn_authen &
 		(PBS_NET_CONN_AUTHENTICATED|PBS_NET_CONN_FROM_PRIVIL))==0) {

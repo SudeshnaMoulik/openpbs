@@ -68,6 +68,7 @@ pbs_server_bin_LDADD = \
 	@PYTHON_LIBS@ \
 	-lssl \
 	-lcrypto \
+	-lpam \
 	@KRB5_LIBS@ \
 	@libundolr_lib@
 

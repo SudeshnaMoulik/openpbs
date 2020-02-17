@@ -801,6 +801,8 @@ __pbs_connect_extend(char *server, char *extend_data)
 
 		reply = PBSD_rdrpy(out);
 		PBSD_FreeReply(reply);
+		if (connection[out].ch_errno != 0)
+        		return -1
 #if defined(PBS_SECURITY) && (PBS_SECURITY == KRB5)
 	}
 #endif

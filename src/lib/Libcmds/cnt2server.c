@@ -108,6 +108,9 @@ cnt2server_extend(char *server, char *extend)
 				case PBSE_PROTOCOL:
 					fprintf(stderr, "Communication failure.\n");
 					break;
+				case PBSE_BADCRED:
+                    			fprintf(stderr, "Bad credential!!. Please check whether user ran the right credentilas in pbs_login tool \n");
+                    			break;
 
 			}
 		} else if (errno != 0)

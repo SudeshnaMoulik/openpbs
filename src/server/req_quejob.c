@@ -749,7 +749,7 @@ req_quejob(struct batch_request *preq)
 
 #if defined(PBS_SECURITY) && (PBS_SECURITY == KRB5)
 	/* save gssapi/krb5 creds for this job */
-	if (conn->cn_credid != NULL) {
+	if (conn->cn_credid != NULL && strcmp(conn->cn_auth_method, AUTH_GSS_NAME) == 0) {
 		log_eventf(PBSEVENT_DEBUG, PBS_EVENTCLASS_SERVER, LOG_DEBUG, __func__,
 			"saving creds.  conn is %d, cred id %s", preq->rq_conn, conn->cn_credid);
 
@@ -2768,7 +2768,7 @@ req_resvSub(struct batch_request *preq)
 	}
 	log_event(PBSEVENT_RESV, PBS_EVENTCLASS_RESV, LOG_INFO,
 		presv->ri_qs.ri_resvID, log_buffer);
-		
+
 	/* link reservation into server's reservation list
 	 * and let the scheduler know that something new
 	 * is available for consideration

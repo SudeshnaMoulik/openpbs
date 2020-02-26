@@ -246,7 +246,7 @@ die(int sig)
 	}
 
 	log_close(1);
-	unload_auth_lib();
+	unload_auths();
 	exit(1);
 }
 
@@ -1146,13 +1146,9 @@ main(int argc, char *argv[])
 	}
 
 	/*Initialize security library's internal data structures*/
-	if (!pbs_conf.is_auth_resvport) {
-		if (load_auth_lib()) {
-			log_err(-1, "pbs_sched", "Failed to load auth lib");
-			die(0);
-		}
-
-		pbs_auth_set_config(log_event, pbs_conf.pbs_home_path);
+	if (load_auths()) {
+		log_err(-1, "pbs_sched", "Failed to load auth lib");
+		die(0);
 	}
 
 	{
@@ -1476,6 +1472,6 @@ main(int argc, char *argv[])
 	lock_out(lockfds, F_UNLCK);
 
 	(void)close(server_sock);
-	unload_auth_lib();
+	unload_auths();
 	exit(0);
 }

@@ -3186,10 +3186,15 @@ req_cpyfile(struct batch_request *preq)
 	pid_t			pid;
 	struct rqfpair		*pair;
 	int			rmtflag;
-	cpy_files	stage_inout;
+	cpy_files		stage_inout;
 	char			*prmt;
-	char                    dup_rqcpf_jobid[PBS_MAXSVRJOBID+1];
-	struct work_task *wtask = NULL;
+	char			dup_rqcpf_jobid[PBS_MAXSVRJOBID+1];
+	struct work_task	*wtask = NULL;
+#if defined(PBS_SECURITY) && (PBS_SECURITY == KRB5)
+	struct krb_holder	*ticket = NULL;
+	char 			*krbccname = NULL;
+#endif
+
 	DBPRT(("%s: entered\n", __func__))
 
 	if (preq->rq_type == PBS_BATCH_CopyFiles_Cred)
@@ -3269,13 +3274,9 @@ req_cpyfile(struct batch_request *preq)
 	else
 		stage_inout.direct_write = 0;
 
-#if defined(PBS_SECURITY) && (PBS_SECURITY == KRB5)
-	struct krb_holder *ticket = NULL;
-	ticket = alloc_ticket();
-#endif
-
 	/* Become the user */
 #if defined(PBS_SECURITY) && (PBS_SECURITY == KRB5)
+	ticket = alloc_ticket();
 	pid = fork_to_user(preq, ticket);
 #else
 	pid = fork_to_user(preq);
@@ -3325,7 +3326,9 @@ req_cpyfile(struct batch_request *preq)
 	}
 
 #if defined(PBS_SECURITY) && (PBS_SECURITY == KRB5)
-	setenv("KRB5CCNAME", get_ticket_ccname(ticket), 1);
+	krbccname = get_ticket_ccname(ticket);
+	if (krbccname != NULL)
+		setenv("KRB5CCNAME", krbccname, 1);
 #endif
 
 	/*
@@ -3479,6 +3482,10 @@ struct batch_request *preq;
 	pid_t	 	pid;
 	job		*pjob;
 	char		*bad_list = NULL;
+#if defined(PBS_SECURITY) && (PBS_SECURITY == KRB5)
+	struct krb_holder *ticket = NULL;
+	char		*krbccname = NULL;
+#endif
 
 	pjob = find_job(preq->rq_ind.rq_cpyfile.rq_jobid);
 	if (pjob) {
@@ -3503,15 +3510,12 @@ struct batch_request *preq;
 	}
 
 #if defined(PBS_SECURITY) && (PBS_SECURITY == KRB5)
-	struct krb_holder *ticket = NULL;
 	ticket = alloc_ticket();
-#endif
-
-#if defined(PBS_SECURITY) && (PBS_SECURITY == KRB5)
-	if ((pid = fork_to_user(preq, ticket)) > 0) {
+	if ((pid = fork_to_user(preq, ticket)) > 0)
 #else
-	if ((pid = fork_to_user(preq)) > 0) {
+	if ((pid = fork_to_user(preq)) > 0)
 #endif
+	{
 		/* parent */
 		if (pjob) {
 			pjob->ji_momsubt = pid;
@@ -3526,7 +3530,9 @@ struct batch_request *preq;
 	}
 
 #if defined(PBS_SECURITY) && (PBS_SECURITY == KRB5)
-        setenv("KRB5CCNAME", get_ticket_ccname(ticket), 1);
+	krbccname = get_ticket_ccname(ticket);
+	if (krbccname != NULL)
+		setenv("KRB5CCNAME", krbccname, 1);
 #endif
 
 	/* Child process ... delete the files */

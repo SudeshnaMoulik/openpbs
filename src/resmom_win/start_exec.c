@@ -131,6 +131,9 @@ extern	char		*mom_home;
 extern	int		enable_exechost2;
 extern	long		joinjob_alarm_time;
 
+extern unsigned char pbs_aes_key[][16];
+extern unsigned char pbs_aes_iv[][16];
+
 int              mom_reader_go;		/* see catchinter() & mom_writer() */
 
 #ifndef WIN32
@@ -4561,7 +4564,7 @@ set_credential(job *pjob, char **shell, char ***argarray)
 			}
 
 			name = NULL;
-			if (pbs_decrypt_pwd(cred_buf, PBS_CREDTYPE_AES, cred_len, &name) != 0) {
+			if (pbs_decrypt_pwd(cred_buf, PBS_CREDTYPE_AES, cred_len, &name, (const unsigned char *) pbs_aes_key, (const unsigned char *) pbs_aes_iv) != 0) {
 				log_err(-1, __func__, "decrypt_pwd");
 				close(fds[0]);
 			}

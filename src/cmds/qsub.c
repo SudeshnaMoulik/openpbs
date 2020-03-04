@@ -169,6 +169,8 @@
 #endif /* localmod 005 */
 extern char *msg_force_qsub_update;
 
+extern unsigned char pbs_aes_key[][16];
+extern unsigned char pbs_aes_iv[][16];
 
 #define PBS_DPREFIX_DEFAULT "#PBS"
 #define PBS_O_ENV "PBS_O_" /* prefix for environment variables created by qsub */
@@ -2306,7 +2308,7 @@ get_passwd(void)
 		}
 	}
 	if (err == 0) {
-		pbs_encrypt_pwd(passwdbuf, &cred_type, &cred_buf, &cred_len);
+		pbs_encrypt_pwd(passwdbuf, &cred_type, &cred_buf, &cred_len, (const unsigned char *) pbs_aes_key, (const unsigned char *) pbs_aes_iv);
 		ret = 0;
 	}
 	if (ret)
@@ -5049,7 +5051,7 @@ do_daemon_stuff(char *fname, char *handle, char *server)
 
 #if defined(PBS_PASS_CREDENTIALS)
 		if (passwd_buf[0] != '\0')
-			pbs_encrypt_pwd(passwd_buf, &cred_type, &cred_buf, &cred_len);
+			pbs_encrypt_pwd(passwd_buf, &cred_type, &cred_buf, &cred_len, (const unsigned char *) pbs_aes_key, (const unsigned char *) pbs_aes_iv);
 #endif
 		/* set the current work directory by doing a chdir */
 		if (_chdir(qsub_cwd) != 0)
@@ -5454,7 +5456,7 @@ do_daemon_stuff(void)
 
 #if defined(PBS_PASS_CREDENTIALS)
 		if (passwd_buf[0] != '\0') {
-			pbs_encrypt_pwd(passwd_buf, &cred_type, &cred_buf, &cred_len);
+			pbs_encrypt_pwd(passwd_buf, &cred_type, &cred_buf, &cred_len, (const unsigned char *) pbs_aes_key, (const unsigned char *) pbs_aes_iv);
 		}
 #endif
 
@@ -5723,7 +5725,7 @@ regular_submit(int daemon_up)
 		if (sd_svr != -1) {
 #if defined(PBS_PASS_CREDENTIALS)
 			if (passwd_buf[0] != '\0')
-				pbs_encrypt_pwd(passwd_buf, &cred_type, &cred_buf, &cred_len);
+				pbs_encrypt_pwd(passwd_buf, &cred_type, &cred_buf, &cred_len, (const unsigned char *) pbs_aes_key, (const unsigned char *) pbs_aes_iv);
 #endif
 			rc = do_submit2(retmsg);
 		}

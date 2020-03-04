@@ -63,6 +63,9 @@
 #include <openssl/evp.h>
 #endif
 
+extern unsigned char pbs_aes_key[][16];
+extern unsigned char pbs_aes_iv[][16];
+
 int quiet = 0;
 int	cred_type;
 size_t	cred_len;
@@ -353,7 +356,7 @@ main(int argc, char *argv[])
 			}
 		}
 
-		pbs_encrypt_pwd(passwd_buf, &cred_type, &cred_buf, &cred_len);
+		pbs_encrypt_pwd(passwd_buf, &cred_type, &cred_buf, &cred_len, (const unsigned char *) pbs_aes_key, (const unsigned char *) pbs_aes_iv);
 
 		if ((cred_buf != NULL) && (strcmp(cred_buf, "") == 0) &&
 			(cred_len == 0)) {

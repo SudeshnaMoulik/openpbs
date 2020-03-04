@@ -38,7 +38,7 @@ extern unsigned char pbs_aes_iv[];
  *
  */
 int
-pbs_encrypt_pwd(char *uncrypted, int *credtype, char **crypted, size_t *outlen)
+pbs_encrypt_pwd(char *uncrypted, int *credtype, char **crypted, size_t *outlen, const unsigned char *aes_key, const unsigned char *aes_iv)
 {
         int plen, len2 = 0;
         unsigned char *cblk;
@@ -53,7 +53,7 @@ pbs_encrypt_pwd(char *uncrypted, int *credtype, char **crypted, size_t *outlen)
 
         CIPHER_CONTEXT_INIT(ctx);
 
-        if (EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, (const unsigned char *) pbs_aes_key, (const unsigned char *) pbs_aes_iv) == 0) {
+        if (EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, (const unsigned char *) aes_key, (const unsigned char *) aes_iv) == 0) {
                 CIPHER_CONTEXT_CLEAN(ctx);
                 return -1;
         }
@@ -104,7 +104,7 @@ pbs_encrypt_pwd(char *uncrypted, int *credtype, char **crypted, size_t *outlen)
  *
  */
 int
-pbs_decrypt_pwd(char *crypted, int credtype, size_t len, char **uncrypted)
+pbs_decrypt_pwd(char *crypted, int credtype, size_t len, char **uncrypted, size_t *outlen, const unsigned char *aes_key, const unsigned char* aes_iv)
 {
         unsigned char *cblk;
         int plen, len2 = 0;
@@ -118,7 +118,7 @@ pbs_decrypt_pwd(char *crypted, int credtype, size_t len, char **uncrypted)
 
         CIPHER_CONTEXT_INIT(ctx);
 
-        if (EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, (const unsigned char *) pbs_aes_key, (const unsigned char *) pbs_aes_iv) == 0) {
+        if (EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, (const unsigned char *) aes_key, (const unsigned char *) aes_iv) == 0) {
                 CIPHER_CONTEXT_CLEAN(ctx);
                 return -1;
         }

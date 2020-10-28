@@ -44,7 +44,7 @@
 %endif
 
 %if !%{defined pbs_version}
-%define pbs_version 20.0.0
+%define pbs_version 2021.1.0.20201022151222.20201028142119.20201028151420.20201028152910
 %endif
 
 %if !%{defined pbs_release}

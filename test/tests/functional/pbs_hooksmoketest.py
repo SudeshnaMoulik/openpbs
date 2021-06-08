@@ -52,9 +52,14 @@ class TestHookSmokeTest(TestFunctional):
         a = {'log_events': 2047, 'scheduling': 'False'}
         self.server.manager(MGR_CMD_SET, SERVER, a)
 
+        conf = self.du.parse_pbs_config()
+        exe_path = os.path.join(conf['PBS_EXEC'], 'bin', 'pbs_sleep')
         self.script = []
         self.script += ['echo Hello World\n']
-        self.script += ['pbs_sleep 30\n']
+        if not os.path.isfile(exe_path):
+            self.script += ['/bin/sleep 30\n']
+        else:
+            self.script += [exe_path + ' 30\n']
         if self.du.get_platform() == "cray" or \
            self.du.get_platform() == "craysim":
             self.script += ['aprun -b -B /bin/sleep 10']
